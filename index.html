@@ -1,119 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlexVital | Haptic Pacing</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { background-color: #050a10; color: white; font-family: sans-serif; margin: 0; overflow-x: hidden; }
-        
-        .hero-section {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: #000;
-        }
+<html>
+<body style="margin:0; background:black;">
 
-        /* THE VIDEO GIF EFFECT */
-        #bg-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: 1;
-            object-fit: cover;
-            opacity: 0; /* Hidden until it actually plays */
-            transition: opacity 1s ease-in;
-        }
+    <!-- This is the most basic way to play a video. If this doesn't show, the file is broken. -->
+    <video id="v" autoplay muted loop playsinline style="width:100%; height:100vh; object-fit:cover;">
+        <source src="promo.mp4" type="video/mp4">
+    </video>
 
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(0deg, rgba(5,10,16,1) 0%, rgba(5,10,16,0.3) 100%);
-            z-index: 2;
-        }
-
-        .content-layer { position: relative; z-index: 10; text-align: center; padding: 0 20px; }
-        .logo-img { max-height: 50px; width: auto; background: transparent; }
-        .teal-text { color: #2bbbb0; }
-        .teal-bg { background-color: #2bbbb0; }
-
-        /* DEBUGGER - Only for setup */
-        #debug-log {
-            position: fixed; bottom: 10px; left: 10px;
-            background: rgba(0,0,0,0.8); color: #0f0;
-            font-family: monospace; font-size: 10px; padding: 10px;
-            border: 1px solid #0f0; z-index: 100;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="debug-log">Status: Initializing...</div>
-
-    <nav class="fixed w-full z-50 py-4 px-6 flex justify-between items-center bg-black/40 backdrop-blur-md">
-        <img src="logo.png" alt="FlexVital" class="logo-img">
-        <button class="teal-bg text-black px-6 py-2 rounded-full font-bold text-xs uppercase italic">Join Waitlist</button>
-    </nav>
-
-    <header class="hero-section">
-        <!-- Using ./ ensures the browser looks in the same folder as the html -->
-        <video id="bg-video" autoplay muted loop playsinline preload="auto">
-            <source src="./promo.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-
-        <div class="content-layer">
-            <h1 class="text-6xl md:text-9xl font-black mb-4 italic uppercase leading-none tracking-tighter">
-                FEEL THE <span class="teal-text">RUN</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-300 uppercase tracking-widest mb-10 max-w-2xl">
-                Haptic Pacing • Motion Monitoring
-            </p>
-            <button class="teal-bg text-black px-12 py-5 rounded-full font-black uppercase tracking-widest hover:scale-105 transition-all">
-                Reserve Now - Php 1,000
-            </button>
-        </div>
-    </header>
-
-    <section class="py-24 bg-[#050a10] text-center px-6">
-        <h2 class="text-3xl font-bold mb-12 uppercase italic tracking-widest">Precision Tracking</h2>
-        <img src="product.png" class="max-w-md mx-auto rounded-[2rem] border border-white/5 shadow-2xl">
-    </section>
+    <div style="position:absolute; top:20px; left:20px; color:white; font-family:sans-serif;">
+        <h1 style="margin:0;">FLEXVITAL</h1>
+        <p id="msg">Checking video status...</p>
+    </div>
 
     <script>
-        const v = document.getElementById('bg-video');
-        const log = document.getElementById('debug-log');
-
-        // Check if file is found
-        v.addEventListener('loadstart', () => { log.innerHTML = "Status: Fetching promo.mp4..."; });
-        
-        // When video is ready to play
-        v.oncanplay = () => { 
-            log.innerHTML = "Status: Ready! Playing...";
-            v.style.opacity = "1";
-            v.play();
-        };
-
-        // If it fails
-        v.onerror = () => { 
-            log.innerHTML = "Status: ERROR - File not found or corrupt.";
-            log.style.color = "red";
-            log.style.borderColor = "red";
-        };
-
-        // Brute force play on any user click
-        window.onclick = () => { v.play(); log.innerHTML = "Status: User forced play."; };
+        const v = document.getElementById('v');
+        const m = document.getElementById('msg');
+        v.onerror = function() { m.innerHTML = "ERROR: promo.mp4 NOT FOUND or CORRUPT"; };
+        v.onplay = function() { m.innerHTML = "SUCCESS: Playing"; };
     </script>
-
 </body>
 </html>
