@@ -1,22 +1,178 @@
 <!DOCTYPE html>
-<html>
-<body style="margin:0; background:black;">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexVital | Master Your Rhythm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #050a10; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
+        .teal-text { color: #2bbbb0; }
+        .teal-bg { background-color: #2bbbb0; }
+        
+        /* 1. HERO VIDEO BACKGROUND (Total Control Reveal) */
+        .hero-container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    <!-- This is the most basic way to play a video. If this doesn't show, the file is broken. -->
-    <video id="v" autoplay muted loop playsinline style="width:100%; height:100vh; object-fit:cover;">
-        <source src="promo.mp4" type="video/mp4">
-    </video>
+        #bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            filter: brightness(0.6);
+        }
 
-    <div style="position:absolute; top:20px; left:20px; color:white; font-family:sans-serif;">
-        <h1 style="margin:0;">FLEXVITAL</h1>
-        <p id="msg">Checking video status...</p>
-    </div>
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(5,10,16,0.2) 0%, rgba(5,10,16,1) 100%);
+            z-index: 2;
+        }
 
+        .hero-content { position: relative; z-index: 10; text-align: center; }
+
+        /* General Styles */
+        .glass { background: rgba(5, 10, 16, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 2rem; transition: 0.3s; }
+        .feature-card:hover { border-color: #2bbbb0; background: rgba(43, 187, 176, 0.05); }
+        
+        .split-screen { display: grid; grid-template-cols: 1fr 1fr; gap: 2px; background: rgba(255,255,255,0.1); border-radius: 2rem; overflow: hidden; }
+        .split-pane { background: #050a10; padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass py-3">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <img src="logo.png" alt="FlexVital" class="h-10 w-auto">
+            <div class="hidden md:flex space-x-8 text-[10px] font-bold tracking-[0.2em] uppercase">
+                <a href="#advantage" class="hover:text-teal-400 transition">Advantage</a>
+                <a href="#hardware" class="hover:text-teal-400 transition">Hardware</a>
+                <a href="#preorder" class="hover:text-teal-400 transition">Pre-Order</a>
+            </div>
+            <button class="teal-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase italic">Shop FlexVital</button>
+        </div>
+    </nav>
+
+    <!-- 1. HERO SECTION: THE TOTAL CONTROL REVEAL -->
+    <header class="hero-container">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="promo.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        
+        <div class="hero-content px-6">
+            <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">
+                Master Your <span class="teal-text underline">Rhythm.</span><br>Own Your Pace.
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light tracking-wide max-w-2xl mx-auto">
+                The haptic fitness band that guides your run without ever looking at a screen.
+            </p>
+            <a href="#preorder" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all inline-block">
+                Shop FlexVital
+            </a>
+        </div>
+    </header>
+
+    <!-- 2. THE "EYES-UP" ADVANTAGE -->
+    <section id="advantage" class="py-32 bg-[#050a10] px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-4">Focus on the path, <br><span class="teal-text">not the pixels.</span></h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Smartwatch Distraction -->
+                <div class="feature-card border-red-900/20">
+                    <div class="text-red-500 font-bold mb-4 uppercase tracking-widest">The Old Way</div>
+                    <h3 class="text-2xl font-bold mb-4 italic">Smartwatch Distraction</h3>
+                    <p class="text-gray-500 leading-relaxed">Breaking form to check a screen leads to inconsistent pacing, reduced awareness, and mental fatigue.</p>
+                </div>
+                <!-- FlexVital Focus -->
+                <div class="feature-card border-teal-500/20">
+                    <div class="teal-text font-bold mb-4 uppercase tracking-widest">The FlexVital Way</div>
+                    <h3 class="text-2xl font-bold mb-4 italic">Focused Horizon</h3>
+                    <p class="text-gray-400 leading-relaxed">Tactile vibration alerts keep you on pace so your eyes stay where they belong—on the finish line.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. FEATURE SHOWCASE: PRECISION HARDWARE -->
+    <section id="hardware" class="py-32 bg-black px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-20 items-center">
+                <div class="relative">
+                    <img src="product.png" alt="FlexVital Band" class="rounded-[3rem] shadow-2xl border border-white/5 relative z-10">
+                    <div class="absolute -top-10 -left-10 w-64 h-64 bg-teal-500/10 blur-[100px]"></div>
+                </div>
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-12 leading-tight">Precision <br><span class="teal-text">Hardware</span></h2>
+                    
+                    <div class="space-y-10">
+                        <div>
+                            <h4 class="teal-text font-black uppercase tracking-tighter mb-2 italic">Haptic Pulse Engine</h4>
+                            <p class="text-gray-400 text-sm">Invisible alerts for interval transitions. Feel the change, don't read it.</p>
+                        </div>
+                        <div>
+                            <h4 class="teal-text font-black uppercase tracking-tighter mb-2 italic">Motion Matrix</h4>
+                            <p class="text-gray-400 text-sm">Advanced monitoring for real-time rhythm analysis and stride consistency.</p>
+                        </div>
+                        <div>
+                            <h4 class="teal-text font-black uppercase tracking-tighter mb-2 italic">Matte Obsidian Finish</h4>
+                            <p class="text-gray-400 text-sm">Sweat-proof, ultra-lightweight performance material designed for the elite flow state.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FINAL CTA / PRE-ORDER -->
+    <section id="preorder" class="py-40 text-center px-6">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-6 leading-none">Precision isn't seen. <br><span class="teal-text underline">It's felt.</span></h2>
+            <p class="text-xl text-gray-500 uppercase tracking-[0.3em] mb-12">Reservations starting at Php 1,000</p>
+            
+            <div class="glass p-12 rounded-[3rem] inline-block w-full max-w-xl">
+                <button class="w-full teal-bg text-black py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-lg hover:bg-white transition-all shadow-[0_0_50px_rgba(43,187,176,0.3)]">
+                    Pre-Order Now
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-20 border-t border-white/5 text-center bg-[#050a10]">
+        <img src="logo.png" alt="Logo" class="h-8 mx-auto mb-8 opacity-40">
+        <p class="text-[9px] text-gray-700 tracking-[0.5em] uppercase mb-4">Talisay, Batangas • Philippines</p>
+        <div class="text-[10px] text-gray-600 italic tracking-widest">Technopreneurship Project &copy; 2024</div>
+    </footer>
+
+    <!-- VIDEO FORCE PLAY -->
     <script>
-        const v = document.getElementById('v');
-        const m = document.getElementById('msg');
-        v.onerror = function() { m.innerHTML = "ERROR: promo.mp4 NOT FOUND or CORRUPT"; };
-        v.onplay = function() { m.innerHTML = "SUCCESS: Playing"; };
+        window.addEventListener('load', function() {
+            var v = document.getElementById('bg-video');
+            v.play().catch(function(e) {
+                console.log("Autoplay blocked. User must interact.");
+            });
+        });
     </script>
+
 </body>
 </html>
