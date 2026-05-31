@@ -12,6 +12,7 @@
         .teal-bg { background-color: #2bbbb0; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
         .hero-gradient { background: radial-gradient(circle at 50% 50%, #102a28 0%, #050a10 100%); }
+        .video-container { position: relative; border-radius: 2rem; overflow: hidden; box-shadow: 0 0 50px rgba(43, 187, 176, 0.2); border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -21,9 +22,9 @@
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <img src="logo.png" alt="FlexVital Logo" class="h-10">
             <div class="hidden md:flex space-x-8 text-sm font-medium tracking-widest uppercase">
+                <a href="#video" class="hover:text-cyan-400 transition">Promo</a>
                 <a href="#features" class="hover:text-cyan-400 transition">Features</a>
                 <a href="#product" class="hover:text-cyan-400 transition">Interface</a>
-                <a href="#pricing" class="hover:text-cyan-400 transition">Pricing</a>
             </div>
             <button class="teal-bg text-black px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition">PRE-ORDER</button>
         </div>
@@ -33,25 +34,41 @@
     <header class="min-h-screen flex flex-col items-center justify-center text-center px-6 hero-gradient pt-20">
         <div class="max-w-4xl">
             <h1 class="text-5xl md:text-8xl font-black mb-6 tracking-tighter uppercase">
-                Run <span class="teal-text">Smarter</span>
+                Feel The <span class="teal-text italic">Pace</span>
             </h1>
             <p class="text-xl md:text-2xl text-gray-400 mb-10 font-light tracking-wide">
-                The world's first haptic-first fitness band. <br class="hidden md:block">
-                Stay strong. Live better. Feel the rhythm of your run.
+                Experience precision motion monitoring and haptic guidance. <br class="hidden md:block">
+                Run smarter. Stay strong. Live better.
             </p>
             <div class="flex flex-col md:flex-row justify-center gap-4 mb-16">
-                <a href="#pricing" class="teal-bg text-black px-10 py-4 rounded-xl text-lg font-bold">Get it for Php 1,000</a>
-                <a href="#features" class="border border-white/20 px-10 py-4 rounded-xl text-lg hover:bg-white/5 transition">Explore Features</a>
+                <a href="#video" class="teal-bg text-black px-10 py-4 rounded-xl text-lg font-bold">Watch Promo</a>
+                <a href="#pricing" class="border border-white/20 px-10 py-4 rounded-xl text-lg hover:bg-white/5 transition">Php 1,000 - Buy Now</a>
             </div>
         </div>
     </header>
 
+    <!-- PROMOTIONAL VIDEO SECTION -->
+    <section id="video" class="py-24 bg-black">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-teal-text font-bold tracking-[0.3em] uppercase text-sm mb-2">The Experience</h2>
+                <h3 class="text-3xl md:text-5xl font-black italic uppercase">See FlexVital in Action</h3>
+            </div>
+            <div class="video-container">
+                <video class="w-full h-auto" autoplay muted loop playsinline controls>
+                    <source src="promo.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+
     <!-- UI/Product Section -->
-    <section id="product" class="py-24 bg-black">
+    <section id="product" class="py-24 glass">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-5xl font-bold mb-4 italic uppercase">Smart Interface</h2>
-                <p class="text-gray-500">Designed for zero-distraction focus. No complex data, just the essentials.</p>
+                <p class="text-gray-500 max-w-2xl mx-auto">As seen in our motion monitoring display, FlexVital tracks your cadence, duration, and pace without cluttering your focus.</p>
             </div>
             <div class="flex justify-center">
                 <img src="product.png" alt="FlexVital UI Interface" class="rounded-3xl shadow-2xl border border-white/10 max-w-full">
@@ -59,52 +76,34 @@
         </div>
     </section>
 
-    <!-- Problem/Features Section -->
-    <section id="features" class="py-24 max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12">
-        <div class="glass p-10 rounded-3xl">
-            <h3 class="text-2xl font-bold mb-4 teal-text uppercase">Vibration Guidance</h3>
-            <p class="text-gray-400 leading-relaxed">Stop checking your watch. Tactile "nudges" tell you when to transition between walking and jogging based on your personal pacing plan.</p>
+    <!-- Features Section (Aligned with Video Content) -->
+    <section id="features" class="py-24 max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="glass p-8 rounded-3xl border-t-4 border-teal-500">
+            <h3 class="text-xl font-bold mb-4 uppercase">Haptic Guidance</h3>
+            <p class="text-gray-400 text-sm">Tactile vibration patterns tell you when to speed up or slow down instantly.</p>
         </div>
-        <div class="glass p-10 rounded-3xl">
-            <h3 class="text-2xl font-bold mb-4 teal-text uppercase">Zero Distraction</h3>
-            <p class="text-gray-400 leading-relaxed">By removing the need for screen-staring, you maintain better running form and stay fully aware of your surroundings.</p>
+        <div class="glass p-8 rounded-3xl">
+            <h3 class="text-xl font-bold mb-4 uppercase">Motion Monitoring</h3>
+            <p class="text-gray-400 text-sm">Advanced sensors track your movement in real-time for perfect running form.</p>
         </div>
-        <div class="glass p-10 rounded-3xl">
-            <h3 class="text-2xl font-bold mb-4 teal-text uppercase">Long Life</h3>
-            <p class="text-gray-400 leading-relaxed">Optimized for efficiency. Get 7-14 days of battery life on a single charge, ready for every workout.</p>
+        <div class="glass p-8 rounded-3xl">
+            <h3 class="text-xl font-bold mb-4 uppercase">Customizable Pacing</h3>
+            <p class="text-gray-400 text-sm">Set your own run-walk intervals to match your personal fitness goals.</p>
         </div>
-    </section>
-
-    <!-- Market Proof -->
-    <section class="py-20 bg-teal-900/10">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h2 class="text-4xl font-bold mb-8 italic uppercase">Validated by Runners</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div>
-                    <div class="text-5xl font-black teal-text mb-2">33</div>
-                    <div class="text-gray-400 uppercase tracking-widest text-sm">Athletes Surveyed</div>
-                </div>
-                <div>
-                    <div class="text-5xl font-black teal-text mb-2">0</div>
-                    <div class="text-gray-400 uppercase tracking-widest text-sm">Rejected the Idea</div>
-                </div>
-                <div>
-                    <div class="text-5xl font-black teal-text mb-2">85%</div>
-                    <div class="text-gray-400 uppercase tracking-widest text-sm">Purchase Intent</div>
-                </div>
-            </div>
+        <div class="glass p-8 rounded-3xl">
+            <h3 class="text-xl font-bold mb-4 uppercase">Ultra Durable</h3>
+            <p class="text-gray-400 text-sm">Lightweight, breathable straps built for intense, sweat-heavy workouts.</p>
         </div>
     </section>
 
-    <!-- Call to Action -->
+    <!-- Pricing Section -->
     <section id="pricing" class="py-32 text-center px-6">
-        <h2 class="text-4xl md:text-6xl font-black mb-8 italic uppercase">Join the Movement</h2>
-        <p class="text-xl text-gray-400 mb-12">The most affordable, high-performance pacing tool on the market.</p>
-        <div class="inline-block glass p-1 rounded-2xl">
-            <div class="teal-bg text-black px-20 py-6 rounded-xl">
-                <span class="text-sm font-bold uppercase tracking-widest block mb-1">Starting Price</span>
-                <span class="text-5xl font-black italic uppercase">Php 1,000</span>
-                <button class="block w-full mt-6 border-2 border-black py-3 rounded-lg font-black hover:bg-black hover:text-white transition">SECURE YOURS</button>
+        <div class="inline-block glass p-1 rounded-3xl">
+            <div class="bg-gradient-to-br from-teal-500 to-teal-800 text-black px-16 py-10 rounded-2xl">
+                <span class="text-sm font-bold uppercase tracking-widest block mb-1">Launch Special</span>
+                <span class="text-6xl font-black italic uppercase">Php 1,000</span>
+                <p class="mt-4 text-black/70 font-medium">Limited first-batch availability.</p>
+                <button class="block w-full mt-8 bg-black text-white py-4 rounded-xl font-black uppercase tracking-widest hover:scale-105 transition">Secure Yours Now</button>
             </div>
         </div>
     </section>
