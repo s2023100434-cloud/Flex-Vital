@@ -5,148 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlexVital | Haptic-First Pacing</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050a10; color: white; font-family: 'Inter', sans-serif; scroll-behavior: smooth; margin: 0; }
-        .teal-text { color: #2bbbb0; }
-        .teal-bg { background-color: #2bbbb0; }
+        body { background-color: #050a10; color: white; font-family: 'Inter', sans-serif; margin: 0; }
         
-        /* LOGO FIX: Since your logo is transparent, we just need to ensure 
-           no background is inherited and it scales correctly */
+        /* LOGO BRUTE FORCE FIX */
+        /* If your logo has a white background, this code 'multiplies' it 
+           into the background, effectively making white disappear. */
+        .logo-container {
+            background: white; /* We put it on white first */
+            mix-blend-mode: lighten; /* Then blend it with the dark nav */
+            padding: 5px;
+            border-radius: 8px;
+            display: inline-block;
+        }
         .logo-img {
-            max-height: 45px;
-            width: auto;
-            background: transparent !important;
+            max-height: 40px;
             display: block;
+            /* If the logo is dark on white, this makes it white on dark */
+            filter: invert(1) grayscale(1) brightness(2); 
+            mix-blend-mode: screen; 
         }
 
-        /* HERO VIDEO BACKGROUND */
-        .hero-video-container {
+        /* VIDEO BACKGROUND "GIF" FIX */
+        .hero-container {
             position: relative;
             height: 100vh;
             width: 100%;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #050a10; /* Fallback color */
+            background: #000;
         }
 
         #bg-video {
             position: absolute;
             top: 50%;
             left: 50%;
+            transform: translate(-50%, -50%);
             min-width: 100%;
             min-height: 100%;
             width: auto;
             height: auto;
-            z-index: 1;
-            transform: translate(-50%, -50%);
             object-fit: cover;
+            z-index: 0;
         }
 
-        .video-overlay {
+        .overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5,10,16,0.3) 0%, rgba(5,10,16,0.9) 100%);
-            z-index: 2; /* Sits above video */
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(5,10,16,0.2), rgba(5,10,16,1));
+            z-index: 1;
         }
 
-        .hero-content {
+        .content {
             position: relative;
-            z-index: 3; /* Sits above overlay */
+            z-index: 2;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
         }
 
-        .glass { background: rgba(5, 10, 16, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .glass-nav {
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
     </style>
 </head>
 <body>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass py-3">
+    <nav class="fixed w-full z-50 glass-nav py-3">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <!-- Transparent Logo -->
-            <img src="logo.png" alt="FlexVital" class="logo-img">
-            
-            <div class="hidden md:flex space-x-8 text-[10px] font-bold tracking-[0.2em] uppercase">
-                <a href="#product" class="hover:text-teal-400 transition">Interface</a>
-                <a href="#features" class="hover:text-teal-400 transition">Tech</a>
-                <a href="#pricing" class="hover:text-teal-400 transition">Pricing</a>
+            <!-- This container helps hide white backgrounds on logos -->
+            <div class="flex items-center gap-2">
+                <img src="logo.png" alt="FlexVital" class="logo-img">
             </div>
-            <button class="teal-bg text-black px-6 py-2 rounded-full font-black text-xs hover:scale-105 transition">PRE-ORDER</button>
+            <button class="bg-[#2bbbb0] text-black px-6 py-2 rounded-full font-black text-xs uppercase italic">Pre-Order</button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="hero-video-container">
-        <!-- Video attributes are critical for autoplay -->
+    <header class="hero-container">
+        <!-- We add every possible attribute to force the video to play -->
         <video autoplay muted loop playsinline preload="auto" id="bg-video">
             <source src="promo.mp4" type="video/mp4">
         </video>
-        <div class="video-overlay"></div>
+        <div class="overlay"></div>
         
-        <div class="hero-content px-6">
-            <h1 class="text-6xl md:text-9xl font-black mb-4 tracking-tighter uppercase leading-none">
-                FEEL THE <span class="teal-text italic">RUN</span>
+        <div class="content px-6">
+            <h1 class="text-6xl md:text-9xl font-black mb-4 tracking-tighter uppercase italic">
+                FEEL THE <span class="text-[#2bbbb0]">RUN</span>
             </h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light tracking-[0.1em] max-w-2xl mx-auto uppercase">
-                Haptic pacing. Motion monitoring. <br>Zero distractions.
-            </p>
-            <a href="#pricing" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:shadow-[0_0_40px_rgba(43,187,176,0.5)] transition">
-                Secure Early Access
-            </a>
-        </div>
-    </header>
-
-    <!-- Product Interface -->
-    <section id="product" class="py-32 bg-[#050a10] relative z-10">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center">
-            <img src="product.png" alt="FlexVital UI" class="rounded-[3rem] shadow-2xl border border-white/10">
-            <div>
-                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-6 leading-tight">Precision <br><span class="teal-text font-light">Monitoring</span></h2>
-                <p class="text-gray-400 text-lg leading-relaxed mb-8">
-                    Stay in the zone. FlexVital translates complex pacing data into a language of touch.
-                </p>
-                <div class="flex items-center gap-4 text-teal-500 font-bold tracking-widest text-sm uppercase">
-                    <span class="w-8 h-[1px] bg-teal-500"></span> 9-Axis Motion Tracking
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section id="pricing" class="py-32 text-center bg-black relative z-10">
-        <div class="max-w-2xl mx-auto px-6">
-            <h2 class="text-5xl font-black italic uppercase mb-12">Php 1,000 Reservation</h2>
-            <div class="glass p-10 rounded-[3rem]">
-                <button class="w-full teal-bg text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-white transition-all">Claim Early Access</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-20 text-center bg-[#050a10]">
-        <img src="logo.png" alt="Logo" class="logo-img opacity-30 grayscale mx-auto mb-8">
-        <p class="text-[9px] text-gray-700 tracking-[0.6em] uppercase">Talisay, Batangas • Philippines</p>
-    </footer>
-
-    <!-- FORCE VIDEO SCRIPT -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var video = document.getElementById('bg-video');
-            // Force play if browser pauses it
-            var playPromise = video.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    console.log("Video playing");
-                }).catch(error => {
-                    console.log("Autoplay prevented, trying again on click");
-                });
-            }
-        });
-    </script>
-
-</body>
-</html>
+            <p class="text-xl text-gray-400 uppercase tracking-widest mb-10">Haptic Pacing • Motion Monitoring</p>
+            <a href="#pricing" class="bg
