@@ -3,99 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlexVital | Haptic-First Pacing</title>
+    <title>FlexVital | Haptic Pacing</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050a10; color: white; font-family: 'Inter', sans-serif; margin: 0; }
+        body { background-color: #050a10; color: white; font-family: sans-serif; margin: 0; overflow-x: hidden; }
         
-        /* LOGO BRUTE FORCE FIX */
-        /* If your logo has a white background, this code 'multiplies' it 
-           into the background, effectively making white disappear. */
-        .logo-container {
-            background: white; /* We put it on white first */
-            mix-blend-mode: lighten; /* Then blend it with the dark nav */
-            padding: 5px;
-            border-radius: 8px;
-            display: inline-block;
-        }
-        .logo-img {
-            max-height: 40px;
-            display: block;
-            /* If the logo is dark on white, this makes it white on dark */
-            filter: invert(1) grayscale(1) brightness(2); 
-            mix-blend-mode: screen; 
-        }
-
-        /* VIDEO BACKGROUND "GIF" FIX */
-        .hero-container {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            background: #000;
+        /* THE VIDEO CONTAINER */
+        .video-background {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1; /* Sits behind everything */
+            background: #000; /* Black if video fails */
         }
 
         #bg-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            z-index: 0;
+            display: block;
         }
 
         .overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(5,10,16,0.2), rgba(5,10,16,1));
-            z-index: 1;
+            background: linear-gradient(0deg, rgba(5,10,16,1) 0%, rgba(5,10,16,0.4) 100%);
+            z-index: 0;
         }
 
-        .content {
+        .content-layer {
             position: relative;
-            z-index: 2;
-            height: 100%;
+            z-index: 10;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
         }
 
-        .glass-nav {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .logo-img { max-height: 45px; width: auto; }
+        .teal-text { color: #2bbbb0; }
+        .teal-bg { background-color: #2bbbb0; }
+
+        /* DEBUGGER BOX - Delete this once video works */
+        #video-status {
+            position: fixed;
+            bottom: 10px; left: 10px;
+            background: red; color: white;
+            padding: 5px 10px; font-size: 10px; z-index: 999;
         }
     </style>
 </head>
 <body>
 
-    <nav class="fixed w-full z-50 glass-nav py-3">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <!-- This container helps hide white backgrounds on logos -->
-            <div class="flex items-center gap-2">
-                <img src="logo.png" alt="FlexVital" class="logo-img">
-            </div>
-            <button class="bg-[#2bbbb0] text-black px-6 py-2 rounded-full font-black text-xs uppercase italic">Pre-Order</button>
-        </div>
+    <!-- Video Status Debugger (Temporary) -->
+    <div id="video-status">Video Status: Checking...</div>
+
+    <nav class="fixed w-full z-50 py-4 px-6 flex justify-between items-center bg-black/50 backdrop-blur-md">
+        <img src="logo.png" alt="FlexVital" class="logo-img">
+        <button class="teal-bg text-black px-6 py-2 rounded-full font-bold text-xs uppercase">Join Waitlist</button>
     </nav>
 
-    <header class="hero-container">
-        <!-- We add every possible attribute to force the video to play -->
-        <video autoplay muted loop playsinline preload="auto" id="bg-video">
-            <source src="promo.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-        
-        <div class="content px-6">
-            <h1 class="text-6xl md:text-9xl font-black mb-4 tracking-tighter uppercase italic">
-                FEEL THE <span class="text-[#2bbbb0]">RUN</span>
+    <header class="relative h-screen w-full">
+        <!-- THE VIDEO TAG -->
+        <div class="video-background">
+            <video autoplay muted loop playsinline id="bg-video">
+                <source src="promo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="overlay"></div>
+        </div>
+
+        <!-- THE TEXT CONTENT -->
+        <div class="content-layer text-center px-6">
+            <h1 class="text-6xl md:text-9xl font-black mb-4 italic uppercase leading-none tracking-tighter">
+                FEEL THE <span class="teal-text">RUN</span>
             </h1>
-            <p class="text-xl text-gray-400 uppercase tracking-widest mb-10">Haptic Pacing • Motion Monitoring</p>
-            <a href="#pricing" class="bg
+            <p class="text-xl md:text-2xl text-gray-300 uppercase tracking-widest mb-10">
+                Haptic Pacing • Motion Monitoring
+            </p>
+            <button class="teal-bg text-black px-12 py-5 rounded-full font-black uppercase tracking-widest hover:scale-105 transition-all">
+                Php 1,000 Reservation
+            </button>
+        </div>
+    </header>
+
+    <section class="py-24 bg-[#050a10] text-center px-6">
+        <h2 class="text-3xl font-bold mb-12 uppercase italic">Precision Interface</h2>
+        <img src="product.png" class="max-w-md mx-auto rounded-3xl border border-white/10 shadow-2xl">
+    </section>
+
+    <!-- DEBUGGER SCRIPT -->
+    <script>
+        const v = document.getElementById('bg-video');
+        const status = document.getElementById('video-status');
+
+        v.oncanplay = () => { status.innerHTML = "Video Status: Loaded & Ready"; status.style.back
