@@ -11,13 +11,16 @@
         .teal-text { color: #2bbbb0; }
         .teal-bg { background-color: #2bbbb0; }
         
-        /* VIDEO SYSTEM */
-        .hero-video-container {
+        /* 1. HERO VIDEO (Total Control Reveal) */
+        .hero-container {
             position: relative;
             height: 100vh;
             width: 100%;
             overflow: hidden;
-            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
         }
 
         #bg-video {
@@ -26,14 +29,11 @@
             left: 50%;
             min-width: 100%;
             min-height: 100%;
-            width: auto;
-            height: auto;
             z-index: 1;
             transform: translate(-50%, -50%);
             object-fit: cover;
-            /* If video is missing, we show the product image as a backup */
-            background: url('product.png') no-repeat center center;
-            background-size: cover;
+            opacity: 0; /* Hidden until we know it's playing */
+            transition: opacity 1s;
         }
 
         .video-overlay {
@@ -44,15 +44,19 @@
         }
 
         .hero-content { position: relative; z-index: 10; text-align: center; }
-        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 2rem; transition: 0.3s; }
+        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 2rem; }
         
-        /* MODAL STYLE */
-        #order-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        #order-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        
+        /* DIAGNOSTIC BOX */
+        #status-box { position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.8); color: #0f0; font-family: monospace; font-size: 10px; padding: 10px; border: 1px solid #0f0; z-index: 999; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <!-- NAVIGATION -->
+    <div id="status-box">Status: Initializing...</div>
+
+    <!-- Navigation -->
     <nav class="fixed w-full z-50 bg-black/60 backdrop-blur-md py-3 border-b border-white/5">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <img src="logo.png" alt="FlexVital" class="h-10 w-auto">
@@ -60,9 +64,9 @@
         </div>
     </nav>
 
-    <!-- 1. HERO SECTION: THE TOTAL CONTROL REVEAL -->
-    <header class="hero-video-container">
-        <!-- poster="product.png" ensures something shows while video loads -->
+    <!-- 1. HERO SECTION -->
+    <header class="hero-container">
+        <!-- poster="product.png" only acts as a placeholder while the video loads -->
         <video autoplay muted loop playsinline id="bg-video" poster="product.png">
             <source src="promo.mp4" type="video/mp4">
         </video>
@@ -70,18 +74,18 @@
         
         <div class="hero-content px-6">
             <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">
-                Master Your <br><span class="teal-text italic">Rhythm.</span>
+                Master Your <span class="teal-text italic">Rhythm.</span>
             </h1>
             <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest">
                 Own Your Pace. Eyes-Up Performance.
             </p>
-            <button onclick="openModal()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:shadow-[0_0_50px_rgba(43,187,176,0.4)] transition-all">
+            <button onclick="openModal()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all">
                 Shop FlexVital
             </button>
         </div>
     </header>
 
-    <!-- 2. THE "EYES-UP" ADVANTAGE -->
+    <!-- 2. VALUE PROP -->
     <section class="py-32 bg-[#050a10] px-6">
         <div class="max-w-5xl mx-auto text-center">
             <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-12">The Eyes-Up <span class="teal-text">Advantage</span></h2>
@@ -102,7 +106,7 @@
     <section class="py-32 bg-black px-6">
         <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
             <img src="product.png" class="rounded-[3rem] shadow-2xl border border-white/5">
-            <div class="space-y-12">
+            <div class="space-y-12 text-left">
                 <h2 class="text-4xl font-black italic uppercase teal-text">Precision Hardware</h2>
                 <div>
                     <h4 class="text-white font-black uppercase tracking-tighter mb-2 italic">Haptic Pulse Engine</h4>
@@ -121,44 +125,53 @@
     </section>
 
     <!-- 4. FINAL CTA -->
-    <section class="py-40 text-center bg-[#050a10]">
-        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-6">Precision is <span class="teal-text">Felt.</span></h2>
-        <button onclick="openModal()" class="teal-bg text-black px-20 py-6 rounded-2xl font-black uppercase text-xl transition-transform hover:scale-105">
+    <section class="py-40 text-center bg-[#050a10] px-6">
+        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-10 leading-tight">Precision isn't seen. <br><span class="teal-text">It's felt.</span></h2>
+        <button onclick="openModal()" class="teal-bg text-black px-20 py-6 rounded-2xl font-black uppercase text-xl transition-transform hover:scale-110">
             Pre-Order Now
         </button>
     </section>
 
-    <!-- PRE-ORDER MODAL (The Working Part) -->
+    <!-- MODAL -->
     <div id="order-modal">
         <div class="bg-[#0a1520] p-10 rounded-[2rem] max-w-md w-full border border-teal-500/30 text-center">
             <h3 class="text-3xl font-black italic uppercase mb-4 teal-text">Secure Your Batch</h3>
             <p class="text-gray-400 mb-8 uppercase text-xs tracking-widest">Reserve for Php 1,000</p>
-            <input type="email" placeholder="Enter Email Address" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500">
-            <button onclick="alert('Reservation Confirmed! We will email you shortly.')" class="w-full teal-bg text-black py-4 rounded-xl font-black uppercase tracking-widest mb-4">Confirm Reservation</button>
-            <button onclick="closeModal()" class="text-gray-500 uppercase text-[10px] tracking-widest">Close</button>
+            <input type="email" id="userEmail" placeholder="Enter Email Address" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500">
+            <button onclick="confirm()" class="w-full teal-bg text-black py-4 rounded-xl font-black uppercase tracking-widest">Confirm Reservation</button>
+            <button onclick="closeModal()" class="block w-full mt-4 text-gray-500 uppercase text-[10px] tracking-[0.5em]">Cancel</button>
         </div>
     </div>
 
     <script>
-        // Modal Controls
         function openModal() { document.getElementById('order-modal').style.display = 'flex'; }
         function closeModal() { document.getElementById('order-modal').style.display = 'none'; }
+        function confirm() {
+            const email = document.getElementById('userEmail').value;
+            if(email) { alert('Success! Reservation confirmed for ' + email); closeModal(); }
+            else { alert('Please enter an email.'); }
+        }
 
         // VIDEO RELIABILITY SCRIPT
-        window.addEventListener('load', function() {
-            const v = document.getElementById('bg-video');
-            
-            // Force reload the video source to clear GitHub caching
-            v.load();
-            
-            let playPromise = v.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Autoplay blocked. Adding manual play trigger.");
-                    document.body.addEventListener('click', () => v.play(), { once: true });
-                });
-            }
-        });
+        const v = document.getElementById('bg-video');
+        const s = document.getElementById('status-box');
+
+        v.oncanplay = () => { 
+            s.innerHTML = "Status: Video Loaded. Playing..."; 
+            v.style.opacity = "1"; 
+            v.play();
+            // Hide status box after 3 seconds of success
+            setTimeout(() => s.style.display = 'none', 3000);
+        };
+
+        v.onerror = () => { 
+            s.innerHTML = "Status: ERROR - promo.mp4 missing or bad codec."; 
+            s.style.color = "red";
+            s.style.borderColor = "red";
+        };
+
+        // If user clicks anywhere, force the video to start
+        window.onclick = () => { v.play(); };
     </script>
 
 </body>
