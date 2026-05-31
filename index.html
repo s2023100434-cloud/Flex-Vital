@@ -3,16 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlexVital | Haptic-First Fitness Band</title>
+    <title>FlexVital | Feel Every Step</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         body { background-color: #050a10; color: white; font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         .teal-text { color: #2bbbb0; }
         .teal-bg { background-color: #2bbbb0; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        .hero-gradient { background: radial-gradient(circle at 50% 50%, #102a28 0%, #050a10 100%); }
-        .video-container { position: relative; border-radius: 2rem; overflow: hidden; box-shadow: 0 0 50px rgba(43, 187, 176, 0.2); border: 1px solid rgba(255,255,255,0.1); }
+        .glass { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Background Video "GIF" Styles */
+        .hero-video-container {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #bg-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+
+        /* Overlay to make text pop */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(5,10,16,0.4) 0%, rgba(5,10,16,0.9) 100%);
+            z-index: -1;
+        }
+
+        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .feature-card:hover { border-color: #2bbbb0; transform: translateY(-5px); }
     </style>
 </head>
 <body>
@@ -22,98 +58,103 @@
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <img src="logo.png" alt="FlexVital Logo" class="h-10">
             <div class="hidden md:flex space-x-8 text-sm font-medium tracking-widest uppercase">
-                <a href="#video" class="hover:text-cyan-400 transition">Promo</a>
                 <a href="#features" class="hover:text-cyan-400 transition">Features</a>
                 <a href="#product" class="hover:text-cyan-400 transition">Interface</a>
+                <a href="#pricing" class="hover:text-cyan-400 transition">Pricing</a>
             </div>
-            <button class="teal-bg text-black px-6 py-2 rounded-full font-bold text-sm hover:opacity-90 transition">PRE-ORDER</button>
+            <button class="teal-bg text-black px-6 py-2 rounded-full font-bold text-sm hover:scale-105 transition">PRE-ORDER</button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="min-h-screen flex flex-col items-center justify-center text-center px-6 hero-gradient pt-20">
-        <div class="max-w-4xl">
-            <h1 class="text-5xl md:text-8xl font-black mb-6 tracking-tighter uppercase">
-                Feel The <span class="teal-text italic">Pace</span>
+    <!-- Hero Section with Background "GIF" Video -->
+    <header class="hero-video-container">
+        <video autoplay muted loop playsinline id="bg-video">
+            <source src="promo.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+        
+        <div class="relative z-10 text-center px-6 max-w-5xl">
+            <h1 class="text-6xl md:text-9xl font-black mb-4 tracking-tighter uppercase leading-none">
+                FEEL THE <span class="teal-text italic">RUN</span>
             </h1>
-            <p class="text-xl md:text-2xl text-gray-400 mb-10 font-light tracking-wide">
-                Experience precision motion monitoring and haptic guidance. <br class="hidden md:block">
-                Run smarter. Stay strong. Live better.
+            <p class="text-xl md:text-3xl text-gray-200 mb-10 font-light tracking-wide max-w-3xl mx-auto">
+                No screens. No distractions. Just pure haptic pacing and real-time motion monitoring.
             </p>
-            <div class="flex flex-col md:flex-row justify-center gap-4 mb-16">
-                <a href="#video" class="teal-bg text-black px-10 py-4 rounded-xl text-lg font-bold">Watch Promo</a>
-                <a href="#pricing" class="border border-white/20 px-10 py-4 rounded-xl text-lg hover:bg-white/5 transition">Php 1,000 - Buy Now</a>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#pricing" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:shadow-[0_0_30px_rgba(43,187,176,0.4)] transition">
+                    Get FlexVital - Php 1,000
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- PROMOTIONAL VIDEO SECTION -->
-    <section id="video" class="py-24 bg-black">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-12">
-                <h2 class="text-teal-text font-bold tracking-[0.3em] uppercase text-sm mb-2">The Experience</h2>
-                <h3 class="text-3xl md:text-5xl font-black italic uppercase">See FlexVital in Action</h3>
-            </div>
-            <div class="video-container">
-                <video class="w-full h-auto" autoplay muted loop playsinline controls>
-                    <source src="promo.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        </div>
-    </section>
-
-    <!-- UI/Product Section -->
-    <section id="product" class="py-24 glass">
+    <!-- UI Display Section -->
+    <section id="product" class="py-32 bg-[#050a10]">
         <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-5xl font-bold mb-4 italic uppercase">Smart Interface</h2>
-                <p class="text-gray-500 max-w-2xl mx-auto">As seen in our motion monitoring display, FlexVital tracks your cadence, duration, and pace without cluttering your focus.</p>
-            </div>
-            <div class="flex justify-center">
-                <img src="product.png" alt="FlexVital UI Interface" class="rounded-3xl shadow-2xl border border-white/10 max-w-full">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-6 leading-tight">
+                        Precision <br><span class="teal-text">Monitoring</span>
+                    </h2>
+                    <p class="text-gray-400 text-lg mb-8 leading-relaxed">
+                        As shown in our motion dashboard, the FlexVital band processes your cadence and duration in real-time, delivering immediate tactile feedback to keep you in your optimal zone.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3 font-bold uppercase tracking-widest text-sm text-teal-500">
+                            <span>⚡</span> Real-time Pacing Alerts
+                        </li>
+                        <li class="flex items-center gap-3 font-bold uppercase tracking-widest text-sm text-teal-500">
+                            <span>⚡</span> Automatic Run/Walk Timers
+                        </li>
+                    </ul>
+                </div>
+                <div class="relative">
+                    <img src="product.png" alt="FlexVital UI" class="rounded-[2rem] shadow-2xl border border-white/10 relative z-10">
+                    <div class="absolute -top-10 -right-10 w-64 h-64 bg-teal-500/10 blur-[100px] -z-0"></div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Features Section (Aligned with Video Content) -->
-    <section id="features" class="py-24 max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="glass p-8 rounded-3xl border-t-4 border-teal-500">
-            <h3 class="text-xl font-bold mb-4 uppercase">Haptic Guidance</h3>
-            <p class="text-gray-400 text-sm">Tactile vibration patterns tell you when to speed up or slow down instantly.</p>
+    <!-- Features Section -->
+    <section id="features" class="py-24 max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8">
+        <div class="feature-card p-10 rounded-[2rem]">
+            <div class="text-3xl mb-6">🎯</div>
+            <h3 class="text-xl font-black mb-4 uppercase italic">Tacton Nudges</h3>
+            <p class="text-gray-400 text-sm leading-relaxed tracking-wide">Proprietary "Tactons" use varying vibration intensities to guide your pace without you ever looking down.</p>
         </div>
-        <div class="glass p-8 rounded-3xl">
-            <h3 class="text-xl font-bold mb-4 uppercase">Motion Monitoring</h3>
-            <p class="text-gray-400 text-sm">Advanced sensors track your movement in real-time for perfect running form.</p>
+        <div class="feature-card p-10 rounded-[2rem]">
+            <div class="text-3xl mb-6">🛡️</div>
+            <h3 class="text-xl font-black mb-4 uppercase italic">Situational Safety</h3>
+            <p class="text-gray-400 text-sm leading-relaxed tracking-wide">Keep your eyes on the path and stay aware of surroundings while the band manages your workout precision.</p>
         </div>
-        <div class="glass p-8 rounded-3xl">
-            <h3 class="text-xl font-bold mb-4 uppercase">Customizable Pacing</h3>
-            <p class="text-gray-400 text-sm">Set your own run-walk intervals to match your personal fitness goals.</p>
-        </div>
-        <div class="glass p-8 rounded-3xl">
-            <h3 class="text-xl font-bold mb-4 uppercase">Ultra Durable</h3>
-            <p class="text-gray-400 text-sm">Lightweight, breathable straps built for intense, sweat-heavy workouts.</p>
+        <div class="feature-card p-10 rounded-[2rem]">
+            <div class="text-3xl mb-6">🔋</div>
+            <h3 class="text-xl font-black mb-4 uppercase italic">Extreme Endurance</h3>
+            <p class="text-gray-400 text-sm leading-relaxed tracking-wide">Designed for marathon training. Optimized power management provides up to 14 days of battery life.</p>
         </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="py-32 text-center px-6">
-        <div class="inline-block glass p-1 rounded-3xl">
-            <div class="bg-gradient-to-br from-teal-500 to-teal-800 text-black px-16 py-10 rounded-2xl">
-                <span class="text-sm font-bold uppercase tracking-widest block mb-1">Launch Special</span>
-                <span class="text-6xl font-black italic uppercase">Php 1,000</span>
-                <p class="mt-4 text-black/70 font-medium">Limited first-batch availability.</p>
-                <button class="block w-full mt-8 bg-black text-white py-4 rounded-xl font-black uppercase tracking-widest hover:scale-105 transition">Secure Yours Now</button>
+    <!-- Pricing / Conversion -->
+    <section id="pricing" class="py-32 text-center px-6 border-t border-white/5">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-5xl md:text-7xl font-black mb-8 italic uppercase leading-none">Ready to <span class="teal-text underline">Level Up?</span></h2>
+            <p class="text-xl text-gray-400 mb-12 uppercase tracking-widest font-bold">Launch Price: Php 1,000</p>
+            <div class="bg-white text-black p-12 rounded-[3rem] inline-block w-full max-w-md shadow-[0_0_60px_rgba(255,255,255,0.1)]">
+                <p class="text-sm font-bold uppercase mb-4 opacity-50 tracking-tighter">Limited First Batch</p>
+                <div class="text-4xl font-black mb-8 italic uppercase">Join the Waitlist</div>
+                <input type="email" placeholder="ENTER YOUR EMAIL" class="w-full bg-gray-100 border-b-2 border-black p-4 mb-6 text-center font-bold tracking-widest focus:outline-none">
+                <button class="w-full teal-bg text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">Claim Early Access</button>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 border-t border-white/5 text-center">
-        <img src="logo.png" alt="Logo" class="h-8 mx-auto mb-6 opacity-50">
-        <p class="text-xs text-gray-600 tracking-[0.3em] uppercase mb-4">Talisay, Batangas • Philippines</p>
-        <div class="text-xs text-gray-500 font-light italic">
-            Technopreneurship Pitch Deck Project &copy; 2024
+    <footer class="py-20 border-t border-white/5 text-center bg-black">
+        <img src="logo.png" alt="Logo" class="h-8 mx-auto mb-8 opacity-40 grayscale">
+        <p class="text-[10px] text-gray-600 tracking-[0.5em] uppercase mb-4">Talisay, Batangas • Region 4A • Philippines</p>
+        <div class="text-[10px] text-gray-500 font-light italic tracking-widest">
+            FLEXVITAL TECHNOPRENEURSHIP PROJECT &copy; 2024
         </div>
     </footer>
 
