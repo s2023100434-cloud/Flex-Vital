@@ -16,20 +16,19 @@
         
         /* HERO VIDEO */
         .hero-container { position: relative; height: 100vh; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; }
-        #bg-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: 1; transform: translate(-50%, -50%); object-fit: cover; filter: brightness(0.5); }
+        #bg-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: 1; transform: translate(-50%, -50%); object-fit: cover; filter: brightness(0.4); }
         .video-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(5,10,16,0.2) 0%, rgba(5,10,16,1) 100%); z-index: 2; }
         
         /* 3D CANVAS STYLES */
-        #canvas-container { width: 100%; height: 500px; cursor: grab; background: radial-gradient(circle, #102025 0%, #050a10 100%); border-radius: 2rem; }
-        #screen-canvas { display: none; } /* Hidden helper canvas */
+        #canvas-container { width: 100%; height: 600px; cursor: grab; background: radial-gradient(circle, #0f1c20 0%, #050a10 100%); border-radius: 3rem; position: relative; overflow: hidden; }
+        #screen-canvas { display: none; } 
 
-        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1.5rem; }
+        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 2rem; transition: 0.3s; }
         #order-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <!-- Hidden Canvas used for 3D Texture Mapping -->
     <canvas id="screen-canvas" width="300" height="600"></canvas>
 
     <nav class="fixed w-full z-50 glass py-3">
@@ -41,73 +40,100 @@
 
     <!-- 1. HERO SECTION -->
     <header class="hero-container">
-        <video autoplay muted loop playsinline id="bg-video" poster="product.png">
+        <video autoplay muted loop playsinline id="bg-video">
             <source src="promo.mp4" type="video/mp4">
         </video>
         <div class="video-overlay"></div>
         <div class="relative z-10 text-center px-6">
-            <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">Master Your <span class="teal-text">Rhythm.</span></h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-light">The haptic fitness band that guides your run without a screen.</p>
-            <button onclick="openModal()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest">Shop FlexVital</button>
+            <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">Master Your <span class="teal-text italic">Rhythm.</span></h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-light">The world's first haptic-first fitness band.</p>
+            <button onclick="openModal()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest">Explore FlexVital</button>
         </div>
     </header>
 
-    <!-- 2. INTERACTIVE 3D SHOWCASE -->
+    <!-- 2. INTERACTIVE HARDWARE LAB -->
     <section class="py-32 bg-[#050a10] px-6">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-            
-            <!-- 3D Render Area -->
-            <div class="relative">
-                <div id="canvas-container"></div>
-                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 bg-black/40 p-2 rounded-full backdrop-blur-md border border-white/10 pointer-events-auto">
-                    <button onclick="setMode('home')" class="px-4 py-1 text-[10px] font-bold uppercase rounded-full hover:bg-white/10">Home</button>
-                    <button onclick="setMode('walkPace')" class="px-4 py-1 text-[10px] font-bold uppercase rounded-full hover:bg-white/10">Walk</button>
-                    <button onclick="setMode('jogPace')" class="px-4 py-1 text-[10px] font-bold uppercase rounded-full hover:bg-white/10">Jog</button>
-                </div>
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-4">The Interactive <span class="teal-text">Lab</span></h2>
+                <p class="text-gray-500">Rotate the band and cycle through modes to see the Haptic Pulse Engine in action.</p>
             </div>
 
-            <!-- Copy Content -->
-            <div>
-                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-8 leading-tight">Precision <br><span class="teal-text">Seen & Felt.</span></h2>
-                <div class="space-y-6">
-                    <div class="feature-card">
-                        <h4 class="teal-text font-black uppercase italic mb-1 text-sm tracking-widest">Haptic Pulse Engine</h4>
-                        <p class="text-gray-400 text-xs leading-relaxed">Interact with the model above to see how our vibration language transitions through different pacing modes.</p>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- 3D Render -->
+                <div id="canvas-container" class="border border-white/5">
+                    <div class="absolute top-6 left-6 z-20">
+                        <span class="text-[10px] text-teal-500 font-bold tracking-[0.3em] uppercase">3D Real-time Render</span>
                     </div>
-                    <div class="feature-card">
-                        <h4 class="teal-text font-black uppercase italic mb-1 text-sm tracking-widest">Matte Obsidian Finish</h4>
-                        <p class="text-gray-400 text-xs leading-relaxed">A sweat-proof, medical-grade polymer shell designed to vanish on your wrist while you hit your flow state.</p>
+                    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 bg-black/60 p-3 rounded-full backdrop-blur-md border border-white/10 z-20">
+                        <button onclick="setMode('home')" class="px-5 py-2 text-[10px] font-bold uppercase rounded-full hover:bg-teal-500 hover:text-black transition">Home</button>
+                        <button onclick="setMode('walk')" class="px-5 py-2 text-[10px] font-bold uppercase rounded-full hover:bg-teal-500 hover:text-black transition">Walk</button>
+                        <button onclick="setMode('jog')" class="px-5 py-2 text-[10px] font-bold uppercase rounded-full hover:bg-teal-500 hover:text-black transition">Jog</button>
                     </div>
-                    <button onclick="openModal()" class="w-full border border-teal-500 py-4 rounded-xl teal-text font-black uppercase tracking-widest hover:bg-teal-500 hover:text-black transition">Enter Pre-Order Lab</button>
+                </div>
+
+                <!-- Hardware Specs -->
+                <div class="space-y-8">
+                    <div class="feature-card">
+                        <h4 class="teal-text font-black uppercase italic mb-2 tracking-widest">Matte Obsidian Shell</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">Sweat-proof, ultra-lightweight performance material. Designed to be ergonomically invisible during high-intensity runs.</p>
+                    </div>
+                    <div class="feature-card border-teal-500/20">
+                        <h4 class="teal-text font-black uppercase italic mb-2 tracking-widest">Haptic Language</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">Uses structured vibration "Tactons" to signal transitions. You feel the rhythm, you own the pace.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. FINAL CTA -->
-    <section id="preorder" class="py-40 text-center bg-black px-6">
-        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-6 leading-none">The Future is <span class="teal-text underline">Felt.</span></h2>
-        <button onclick="openModal()" class="teal-bg text-black px-20 py-6 rounded-2xl font-black uppercase text-xl shadow-[0_0_50px_rgba(43,187,176,0.3)]">Pre-Order Now</button>
+    <!-- 3. STATIC PRODUCT SHOWCASE (Ensuring product.png stays) -->
+    <section class="py-32 bg-black px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-center">
+            <div class="md:w-1/2">
+                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-8 leading-tight">Precision <br><span class="teal-text underline">Perfected.</span></h2>
+                <p class="text-gray-400 text-lg mb-8">Every curve of the FlexVital band is engineered for the "Eyes-Up" advantage. Our motion matrix sensors provide 9-axis tracking with medical-grade accuracy.</p>
+                <div class="flex gap-4">
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10 text-center flex-1">
+                        <span class="block text-2xl font-bold italic">14 Days</span>
+                        <span class="text-[10px] uppercase text-gray-500 tracking-widest">Battery Life</span>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10 text-center flex-1">
+                        <span class="block text-2xl font-bold italic">9-Axis</span>
+                        <span class="text-[10px] uppercase text-gray-500 tracking-widest">IMU Sensors</span>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2">
+                <!-- Static product.png preserved and highlighted -->
+                <img src="product.png" alt="FlexVital Product" class="rounded-[3rem] shadow-2xl border border-white/10 hover:scale-105 transition duration-700">
+            </div>
+        </div>
     </section>
 
-    <!-- ORDER MODAL -->
+    <!-- 4. FINAL CTA -->
+    <section class="py-40 text-center bg-[#050a10] px-6">
+        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-6 leading-none">The Future is <span class="teal-text underline">Felt.</span></h2>
+        <button onclick="openModal()" class="teal-bg text-black px-20 py-6 rounded-2xl font-black uppercase text-xl transition hover:bg-white">Pre-Order Now</button>
+    </section>
+
+    <!-- MODAL -->
     <div id="order-modal">
-        <div class="bg-[#0a1520] p-10 rounded-[2rem] max-w-md w-full border border-teal-500/30 text-center">
-            <h3 class="text-3xl font-black italic uppercase mb-4 teal-text">Secure Your Batch</h3>
-            <p class="text-gray-400 mb-8 uppercase text-xs tracking-widest">Reserve for Php 1,000</p>
-            <input type="email" id="email" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500">
-            <button onclick="alert('Success! We will contact you soon.'); closeModal();" class="w-full teal-bg text-black py-4 rounded-xl font-black uppercase">Confirm</button>
-            <button onclick="closeModal()" class="mt-4 text-gray-500 uppercase text-[10px] tracking-widest">Cancel</button>
+        <div class="bg-[#0a1520] p-10 rounded-[3rem] max-w-md w-full border border-teal-500/30 text-center">
+            <h3 class="text-3xl font-black italic uppercase mb-4 teal-text text-center">Batch 01 Access</h3>
+            <p class="text-gray-400 mb-8 uppercase text-[10px] tracking-widest">Reserve for Php 1,000</p>
+            <input type="email" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-6 text-center outline-none focus:border-teal-500">
+            <button onclick="alert('Confirmed!'); closeModal();" class="w-full teal-bg text-black py-4 rounded-xl font-black uppercase">Secure Reservation</button>
+            <button onclick="closeModal()" class="mt-4 text-gray-500 uppercase text-[10px] tracking-[0.5em]">Close</button>
         </div>
     </div>
 
-    <!-- 3D LOGIC SCRIPTS -->
+    <!-- 3D ENGINE SCRIPTS -->
     <script>
-        // Modal Controls
         function openModal() { document.getElementById('order-modal').style.display = 'flex'; }
         function closeModal() { document.getElementById('order-modal').style.display = 'none'; }
 
-        // Three.js and Canvas State
+        // --- Screen Texturing Logic ---
         let currentMode = 'home';
         const sCanvas = document.getElementById('screen-canvas');
         const ctx = sCanvas.getContext('2d');
@@ -117,14 +143,27 @@
             ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, 300, 600);
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             
-            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 72px sans-serif';
-            ctx.fillText(currentMode === 'home' ? "08:45" : "00:25", 150, 280);
-            
-            ctx.fillStyle = '#2bbbb0'; ctx.font = 'bold 24px sans-serif';
-            ctx.fillText(currentMode.toUpperCase(), 150, 400);
+            // Draw Icons
+            ctx.fillStyle = '#2bbbb0';
+            if(currentMode === 'home') {
+                // Footprint icon logic
+                ctx.font = '50px serif'; ctx.fillText('👣', 150, 200);
+            } else {
+                ctx.font = '50px serif'; ctx.fillText('🏃', 150, 200);
+            }
 
+            // Main Time/Stats
+            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 72px sans-serif';
+            ctx.fillText(currentMode === 'home' ? "08:45" : "00:25", 150, 300);
+            
+            // Mode Label
+            ctx.fillStyle = '#2bbbb0'; ctx.font = 'bold 24px sans-serif';
+            ctx.fillText(currentMode.toUpperCase(), 150, 420);
+
+            // Haptic Wave { }
             ctx.strokeStyle = '#2bbbb0'; ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(100, 350); ctx.lineTo(200, 350); ctx.stroke();
+            ctx.beginPath(); ctx.arc(150, 500, 30, 0.8*Math.PI, 1.2*Math.PI); ctx.stroke();
+            ctx.beginPath(); ctx.arc(150, 500, 30, -0.2*Math.PI, 0.2*Math.PI); ctx.stroke();
 
             if (screenTexture) screenTexture.needsUpdate = true;
         }
@@ -132,34 +171,57 @@
         function setMode(mode) { currentMode = mode; drawScreen(); }
         drawScreen();
 
-        // 3D Scene Build
+        // --- 3D Scene Build ---
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 100);
-        camera.position.set(3, 2, 6);
+        const camera = new THREE.PerspectiveCamera(40, container.offsetWidth / container.offsetHeight, 0.1, 100);
+        camera.position.set(4, 2, 7);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(container.offsetWidth, container.offsetHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(renderer.domElement);
 
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableZoom = false; controls.autoRotate = true;
+        controls.enableZoom = false; controls.autoRotate = true; controls.autoRotateSpeed = 0.5;
 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-        const light = new THREE.DirectionalLight(0xffffff, 1); light.position.set(5, 5, 5); scene.add(light);
+        // Better Lights
+        scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+        const light1 = new THREE.DirectionalLight(0xffffff, 1); light1.position.set(5, 5, 5); scene.add(light1);
+        const light2 = new THREE.DirectionalLight(0x2bbbb0, 0.4); light2.position.set(-5, -5, -5); scene.add(light2);
 
-        // Simple Watch Build
+        // --- Sophisticated Watch Model ---
         const watch = new THREE.Group();
-        const bodyGeo = new THREE.BoxGeometry(1.6, 3.2, 0.4);
-        const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.5, roughness: 0.1 });
-        watch.add(new THREE.Mesh(bodyGeo, bodyMat));
 
+        // Curved Body
+        const bodyGeo = new THREE.BoxGeometry(1.6, 3.4, 0.5);
+        // Rounded corners simulated by texture or bevel (simplified for script)
+        const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.6, roughness: 0.2, clearcoat: 0.5 });
+        const body = new THREE.Mesh(bodyGeo, bodyMat);
+        watch.add(body);
+
+        // Screen
         screenTexture = new THREE.CanvasTexture(sCanvas);
-        const screenGeo = new THREE.PlaneGeometry(1.4, 3.0);
+        const screenGeo = new THREE.PlaneGeometry(1.4, 3.1);
         const screenMat = new THREE.MeshBasicMaterial({ map: screenTexture });
         const screenMesh = new THREE.Mesh(screenGeo, screenMat);
-        screenMesh.position.z = 0.21;
+        screenMesh.position.z = 0.26;
         watch.add(screenMesh);
+
+        // Straps (Curved)
+        const strapMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.9 });
+        const createStrap = (yPos, rot) => {
+            const strapGeo = new THREE.CylinderGeometry(1.5, 1.5, 1.4, 32, 1, true, 0, Math.PI);
+            const strap = new THREE.Mesh(strapGeo, strapMat);
+            strap.rotation.z = Math.PI / 2;
+            strap.rotation.x = rot;
+            strap.position.y = yPos;
+            strap.position.z = -1.2;
+            return strap;
+        };
+        watch.add(createStrap(1.6, Math.PI)); // Top
+        watch.add(createStrap(-1.6, 0));       // Bottom
+
         scene.add(watch);
 
         function animate() {
@@ -169,7 +231,6 @@
         }
         animate();
 
-        // Resize Fix
         window.addEventListener('resize', () => {
             camera.aspect = container.offsetWidth / container.offsetHeight;
             camera.updateProjectionMatrix();
