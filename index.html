@@ -5,174 +5,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlexVital | Master Your Rhythm</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body { background-color: #050a10; color: white; font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
         .teal-text { color: #2bbbb0; }
         .teal-bg { background-color: #2bbbb0; }
+        .glass { background: rgba(5, 10, 16, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
         
-        /* 1. HERO VIDEO (Total Control Reveal) */
-        .hero-container {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-        }
-
-        #bg-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            z-index: 1;
-            transform: translate(-50%, -50%);
-            object-fit: cover;
-            opacity: 0; /* Hidden until we know it's playing */
-            transition: opacity 1s;
-        }
-
-        .video-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(5,10,16,0.3) 0%, rgba(5,10,16,1) 95%);
-            z-index: 2;
-        }
-
-        .hero-content { position: relative; z-index: 10; text-align: center; }
-        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 2rem; }
+        /* HERO VIDEO */
+        .hero-container { position: relative; height: 100vh; width: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; }
+        #bg-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: 1; transform: translate(-50%, -50%); object-fit: cover; filter: brightness(0.5); }
+        .video-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(5,10,16,0.2) 0%, rgba(5,10,16,1) 100%); z-index: 2; }
         
-        #order-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        
-        /* DIAGNOSTIC BOX */
-        #status-box { position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,0.8); color: #0f0; font-family: monospace; font-size: 10px; padding: 10px; border: 1px solid #0f0; z-index: 999; pointer-events: none; }
+        /* 3D CANVAS STYLES */
+        #canvas-container { width: 100%; height: 500px; cursor: grab; background: radial-gradient(circle, #102025 0%, #050a10 100%); border-radius: 2rem; }
+        #screen-canvas { display: none; } /* Hidden helper canvas */
+
+        .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 1.5rem; }
+        #order-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <div id="status-box">Status: Initializing...</div>
+    <!-- Hidden Canvas used for 3D Texture Mapping -->
+    <canvas id="screen-canvas" width="300" height="600"></canvas>
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-black/60 backdrop-blur-md py-3 border-b border-white/5">
+    <nav class="fixed w-full z-50 glass py-3">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
             <img src="logo.png" alt="FlexVital" class="h-10 w-auto">
-            <button onclick="openModal()" class="teal-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase italic hover:scale-105 transition">Pre-Order</button>
+            <button onclick="openModal()" class="teal-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase italic">Pre-Order</button>
         </div>
     </nav>
 
     <!-- 1. HERO SECTION -->
     <header class="hero-container">
-        <!-- poster="product.png" only acts as a placeholder while the video loads -->
         <video autoplay muted loop playsinline id="bg-video" poster="product.png">
             <source src="promo.mp4" type="video/mp4">
         </video>
         <div class="video-overlay"></div>
-        
-        <div class="hero-content px-6">
-            <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">
-                Master Your <span class="teal-text italic">Rhythm.</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest">
-                Own Your Pace. Eyes-Up Performance.
-            </p>
-            <button onclick="openModal()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all">
-                Shop FlexVital
-            </button>
+        <div class="relative z-10 text-center px-6">
+            <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">Master Your <span class="teal-text">Rhythm.</span></h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-light">The haptic fitness band that guides your run without a screen.</p>
+            <button onclick="openModal()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest">Shop FlexVital</button>
         </div>
     </header>
 
-    <!-- 2. VALUE PROP -->
+    <!-- 2. INTERACTIVE 3D SHOWCASE -->
     <section class="py-32 bg-[#050a10] px-6">
-        <div class="max-w-5xl mx-auto text-center">
-            <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-12">The Eyes-Up <span class="teal-text">Advantage</span></h2>
-            <div class="grid md:grid-cols-2 gap-4">
-                <div class="feature-card text-left">
-                    <p class="text-red-500 font-bold mb-2 uppercase">Distracted</p>
-                    <p class="text-gray-400">Smartwatch users break form, lose rhythm, and lose situational awareness by constantly checking pixels.</p>
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+            
+            <!-- 3D Render Area -->
+            <div class="relative">
+                <div id="canvas-container"></div>
+                <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 bg-black/40 p-2 rounded-full backdrop-blur-md border border-white/10 pointer-events-auto">
+                    <button onclick="setMode('home')" class="px-4 py-1 text-[10px] font-bold uppercase rounded-full hover:bg-white/10">Home</button>
+                    <button onclick="setMode('walkPace')" class="px-4 py-1 text-[10px] font-bold uppercase rounded-full hover:bg-white/10">Walk</button>
+                    <button onclick="setMode('jogPace')" class="px-4 py-1 text-[10px] font-bold uppercase rounded-full hover:bg-white/10">Jog</button>
                 </div>
-                <div class="feature-card text-left border-teal-500/30">
-                    <p class="teal-text font-bold mb-2 uppercase">Focused</p>
-                    <p class="text-white">FlexVital users keep their eyes on the horizon. Tactile vibrations manage the pace while you focus on the run.</p>
+            </div>
+
+            <!-- Copy Content -->
+            <div>
+                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-8 leading-tight">Precision <br><span class="teal-text">Seen & Felt.</span></h2>
+                <div class="space-y-6">
+                    <div class="feature-card">
+                        <h4 class="teal-text font-black uppercase italic mb-1 text-sm tracking-widest">Haptic Pulse Engine</h4>
+                        <p class="text-gray-400 text-xs leading-relaxed">Interact with the model above to see how our vibration language transitions through different pacing modes.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4 class="teal-text font-black uppercase italic mb-1 text-sm tracking-widest">Matte Obsidian Finish</h4>
+                        <p class="text-gray-400 text-xs leading-relaxed">A sweat-proof, medical-grade polymer shell designed to vanish on your wrist while you hit your flow state.</p>
+                    </div>
+                    <button onclick="openModal()" class="w-full border border-teal-500 py-4 rounded-xl teal-text font-black uppercase tracking-widest hover:bg-teal-500 hover:text-black transition">Enter Pre-Order Lab</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. FEATURE SHOWCASE -->
-    <section class="py-32 bg-black px-6">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
-            <img src="product.png" class="rounded-[3rem] shadow-2xl border border-white/5">
-            <div class="space-y-12 text-left">
-                <h2 class="text-4xl font-black italic uppercase teal-text">Precision Hardware</h2>
-                <div>
-                    <h4 class="text-white font-black uppercase tracking-tighter mb-2 italic">Haptic Pulse Engine</h4>
-                    <p class="text-gray-500 text-sm">Invisible alerts for interval transitions. Feel the change instantly.</p>
-                </div>
-                <div>
-                    <h4 class="text-white font-black uppercase tracking-tighter mb-2 italic">Motion Matrix</h4>
-                    <p class="text-gray-500 text-sm">9-axis monitoring for real-time rhythm and form analysis.</p>
-                </div>
-                <div>
-                    <h4 class="text-white font-black uppercase tracking-tighter mb-2 italic">Matte Obsidian Finish</h4>
-                    <p class="text-gray-500 text-sm">Sweat-proof, ultra-lightweight performance material.</p>
-                </div>
-            </div>
-        </div>
+    <!-- 3. FINAL CTA -->
+    <section id="preorder" class="py-40 text-center bg-black px-6">
+        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-6 leading-none">The Future is <span class="teal-text underline">Felt.</span></h2>
+        <button onclick="openModal()" class="teal-bg text-black px-20 py-6 rounded-2xl font-black uppercase text-xl shadow-[0_0_50px_rgba(43,187,176,0.3)]">Pre-Order Now</button>
     </section>
 
-    <!-- 4. FINAL CTA -->
-    <section class="py-40 text-center bg-[#050a10] px-6">
-        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-10 leading-tight">Precision isn't seen. <br><span class="teal-text">It's felt.</span></h2>
-        <button onclick="openModal()" class="teal-bg text-black px-20 py-6 rounded-2xl font-black uppercase text-xl transition-transform hover:scale-110">
-            Pre-Order Now
-        </button>
-    </section>
-
-    <!-- MODAL -->
+    <!-- ORDER MODAL -->
     <div id="order-modal">
         <div class="bg-[#0a1520] p-10 rounded-[2rem] max-w-md w-full border border-teal-500/30 text-center">
             <h3 class="text-3xl font-black italic uppercase mb-4 teal-text">Secure Your Batch</h3>
             <p class="text-gray-400 mb-8 uppercase text-xs tracking-widest">Reserve for Php 1,000</p>
-            <input type="email" id="userEmail" placeholder="Enter Email Address" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500">
-            <button onclick="confirm()" class="w-full teal-bg text-black py-4 rounded-xl font-black uppercase tracking-widest">Confirm Reservation</button>
-            <button onclick="closeModal()" class="block w-full mt-4 text-gray-500 uppercase text-[10px] tracking-[0.5em]">Cancel</button>
+            <input type="email" id="email" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500">
+            <button onclick="alert('Success! We will contact you soon.'); closeModal();" class="w-full teal-bg text-black py-4 rounded-xl font-black uppercase">Confirm</button>
+            <button onclick="closeModal()" class="mt-4 text-gray-500 uppercase text-[10px] tracking-widest">Cancel</button>
         </div>
     </div>
 
+    <!-- 3D LOGIC SCRIPTS -->
     <script>
+        // Modal Controls
         function openModal() { document.getElementById('order-modal').style.display = 'flex'; }
         function closeModal() { document.getElementById('order-modal').style.display = 'none'; }
-        function confirm() {
-            const email = document.getElementById('userEmail').value;
-            if(email) { alert('Success! Reservation confirmed for ' + email); closeModal(); }
-            else { alert('Please enter an email.'); }
+
+        // Three.js and Canvas State
+        let currentMode = 'home';
+        const sCanvas = document.getElementById('screen-canvas');
+        const ctx = sCanvas.getContext('2d');
+        let screenTexture;
+
+        function drawScreen() {
+            ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, 300, 600);
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            
+            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 72px sans-serif';
+            ctx.fillText(currentMode === 'home' ? "08:45" : "00:25", 150, 280);
+            
+            ctx.fillStyle = '#2bbbb0'; ctx.font = 'bold 24px sans-serif';
+            ctx.fillText(currentMode.toUpperCase(), 150, 400);
+
+            ctx.strokeStyle = '#2bbbb0'; ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.moveTo(100, 350); ctx.lineTo(200, 350); ctx.stroke();
+
+            if (screenTexture) screenTexture.needsUpdate = true;
         }
 
-        // VIDEO RELIABILITY SCRIPT
-        const v = document.getElementById('bg-video');
-        const s = document.getElementById('status-box');
+        function setMode(mode) { currentMode = mode; drawScreen(); }
+        drawScreen();
 
-        v.oncanplay = () => { 
-            s.innerHTML = "Status: Video Loaded. Playing..."; 
-            v.style.opacity = "1"; 
-            v.play();
-            // Hide status box after 3 seconds of success
-            setTimeout(() => s.style.display = 'none', 3000);
-        };
+        // 3D Scene Build
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 0.1, 100);
+        camera.position.set(3, 2, 6);
 
-        v.onerror = () => { 
-            s.innerHTML = "Status: ERROR - promo.mp4 missing or bad codec."; 
-            s.style.color = "red";
-            s.style.borderColor = "red";
-        };
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        container.appendChild(renderer.domElement);
 
-        // If user clicks anywhere, force the video to start
-        window.onclick = () => { v.play(); };
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableZoom = false; controls.autoRotate = true;
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+        const light = new THREE.DirectionalLight(0xffffff, 1); light.position.set(5, 5, 5); scene.add(light);
+
+        // Simple Watch Build
+        const watch = new THREE.Group();
+        const bodyGeo = new THREE.BoxGeometry(1.6, 3.2, 0.4);
+        const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.5, roughness: 0.1 });
+        watch.add(new THREE.Mesh(bodyGeo, bodyMat));
+
+        screenTexture = new THREE.CanvasTexture(sCanvas);
+        const screenGeo = new THREE.PlaneGeometry(1.4, 3.0);
+        const screenMat = new THREE.MeshBasicMaterial({ map: screenTexture });
+        const screenMesh = new THREE.Mesh(screenGeo, screenMat);
+        screenMesh.position.z = 0.21;
+        watch.add(screenMesh);
+        scene.add(watch);
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Resize Fix
+        window.addEventListener('resize', () => {
+            camera.aspect = container.offsetWidth / container.offsetHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+        });
     </script>
-
 </body>
 </html>
