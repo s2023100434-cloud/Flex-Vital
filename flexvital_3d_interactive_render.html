@@ -7,10 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; background-color: #0a0a0a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { margin: 0; overflow: hidden; background-color: #030303; color: white; font-family: 'Inter', sans-serif; }
         #canvas-container { width: 100vw; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
-        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; display: flex; flex-direction: column; md:flex-row; }
+        #ui-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; display: flex; flex-direction: column; }
+        @media (min-width: 768px) { #ui-layer { flex-direction: row; } }
         .pointer-events-auto { pointer-events: auto; }
         .text-teal { color: #00e699; }
         .bg-teal { background-color: #00e699; }
@@ -27,53 +29,52 @@
 </head>
 <body>
 
-    <!-- Hidden Canvas used for Three.js Texture -->
     <canvas id="screen-canvas" width="300" height="600"></canvas>
 
-    <!-- 3D Container -->
     <div id="canvas-container"></div>
 
-    <!-- UI Overlay -->
-    <div id="ui-layer" class="flex flex-col md:flex-row justify-between p-6">
+    <div id="ui-layer" class="justify-between p-6">
         
-        <!-- Left Panel: Branding & Controls -->
         <div class="pointer-events-auto bg-black/80 backdrop-blur-md border border-gray-800 p-8 rounded-2xl w-full md:w-80 shadow-2xl flex flex-col gap-6 max-h-[95vh] overflow-y-auto mb-4 md:mb-0">
             <div>
                 <h1 class="text-3xl font-bold tracking-wider">FLEX<span class="text-teal">VITAL</span></h1>
-                <p class="text-xs text-gray-400 mt-1 tracking-widest uppercase">Smart Vibration Pacing Band</p>
+                <p class="text-xs text-gray-400 mt-1 tracking-widest uppercase font-medium">Smart Vibration Pacing Band</p>
             </div>
 
-            <!-- Display Modes Selection -->
             <div class="space-y-2">
-                <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-widest border-b border-gray-800 pb-2 mb-3">Display Modes</h2>
+                <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest border-b border-gray-800 pb-2 mb-3">Display Modes</h2>
                 
                 <button onclick="setMode('home')" id="btn-home" class="w-full text-left px-4 py-2.5 rounded-xl bg-teal text-black font-semibold border border-teal transition-all group flex items-center justify-between">
                     <span>Home / Time</span>
                     <span class="w-2 h-2 rounded-full bg-black"></span>
                 </button>
                 
-                <button onclick="setMode('walkPace')" id="btn-walkPace" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between">
+                <button onclick="setMode('walkPace')" id="btn-walkPace" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between text-sm">
                     <span>Walking Pace</span>
                     <span class="w-2 h-2 rounded-full bg-teal opacity-0 group-hover:opacity-100 transition-opacity"></span>
                 </button>
                 
-                <button onclick="setMode('jogPace')" id="btn-jogPace" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between">
+                <button onclick="setMode('jogPace')" id="btn-jogPace" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between text-sm">
                     <span>Jog Pace</span>
                     <span class="w-2 h-2 rounded-full bg-teal opacity-0 group-hover:opacity-100 transition-opacity"></span>
                 </button>
 
-                <button onclick="setMode('walkTime')" id="btn-walkTime" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between">
+                <button onclick="setMode('walkTime')" id="btn-walkTime" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between text-sm">
                     <span>Walk Duration</span>
                     <span class="w-2 h-2 rounded-full bg-teal opacity-0 group-hover:opacity-100 transition-opacity"></span>
                 </button>
 
-                <button onclick="setMode('totalTime')" id="btn-totalTime" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between">
+                <button onclick="setMode('jogTime')" id="btn-jogTime" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between text-sm">
+                    <span>Jog Duration</span>
+                    <span class="w-2 h-2 rounded-full bg-teal opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                </button>
+
+                <button onclick="setMode('totalTime')" id="btn-totalTime" class="w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between text-sm">
                     <span>Total Time</span>
                     <span class="w-2 h-2 rounded-full bg-teal opacity-0 group-hover:opacity-100 transition-opacity"></span>
                 </button>
             </div>
 
-            <!-- Workout Timer Controls -->
             <div class="space-y-3 bg-gray-950/80 p-4 rounded-xl border border-gray-800">
                 <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Workout Session</h3>
                 <div class="flex gap-2">
@@ -84,14 +85,10 @@
                         RESET
                     </button>
                 </div>
-                <div class="text-[10px] text-gray-500 text-center">
-                    Simulates active walking & tracking workout logs
-                </div>
             </div>
 
-            <!-- Vibration Setup -->
             <div>
-                <h2 class="text-sm font-semibold text-gray-300 uppercase tracking-widest border-b border-gray-800 pb-2 mb-3">Vibration Setting</h2>
+                <h2 class="text-xs font-semibold text-gray-400 uppercase tracking-widest border-b border-gray-800 pb-2 mb-3">Vibration Guide</h2>
                 <div class="flex bg-gray-900 rounded-xl p-1 border border-gray-700">
                     <button id="vib-on-btn" onclick="setVibration(true)" class="flex-1 py-2 rounded-lg bg-teal text-black font-semibold text-sm transition-colors">ON</button>
                     <button id="vib-off-btn" onclick="setVibration(false)" class="flex-1 py-2 rounded-lg text-gray-400 font-semibold text-sm transition-colors hover:text-white">OFF</button>
@@ -99,7 +96,6 @@
             </div>
         </div>
 
-        <!-- Right Panel: Instructions -->
         <div class="pointer-events-auto self-end md:self-start bg-black/60 backdrop-blur border border-gray-800 p-4 rounded-xl text-sm text-gray-300 flex items-center gap-3">
             <svg class="w-5 h-5 text-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
             Drag to rotate, scroll to zoom
@@ -111,22 +107,26 @@
         let currentMode = 'home';
         let vibrationOn = true;
         
-        // Timer simulation states
+        // Timer simulation states 
         let isTimerRunning = true;
-        let elapsedTotalSeconds = 3465; // preset to 00:57:45 (like design)
-        let elapsedWalkSeconds = 1530;  // preset to 00:25:30 (like design)
+        let animationTime = 0; // Used to drive procedural icon animation
+        let elapsedWalkSeconds = 1530.0;  // 00:25:30
+        let elapsedJogSeconds = 1935.0;   // 00:32:15
+        let elapsedTotalSeconds = 3465.0; // 00:57:45
         
         // --- Canvas Rendering (Smartwatch Screen) ---
         const sCanvas = document.getElementById('screen-canvas');
         const ctx = sCanvas.getContext('2d');
         const TEAL = '#00e699';
-        const GREY = '#666666';
+        const GREY = '#2a2a2a'; 
+        const TEXT_WHITE = '#ffffff';
         let screenTexture;
 
         function formatStopwatch(totalSec) {
-            const h = Math.floor(totalSec / 3600);
-            const m = Math.floor((totalSec % 3600) / 60);
-            const s = totalSec % 60;
+            const total = Math.floor(totalSec);
+            const h = Math.floor(total / 3600);
+            const m = Math.floor((total % 3600) / 60);
+            const s = total % 60;
             return [
                 String(h).padStart(2, '0'),
                 String(m).padStart(2, '0'),
@@ -147,171 +147,218 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
 
-            // Top Icon Area
+            // 1. Draw Top Icon
+            const iconY = cy - 150;
+            const iconColor = vibrationOn ? TEAL : '#444444';
+
             if (currentMode === 'home') {
-                drawFootprints(cx, cy - 120, vibrationOn ? TEAL : GREY);
+                drawFootprints(cx, iconY, iconColor);
+            } else if (currentMode === 'walkPace' || currentMode === 'walkTime') {
+                drawWalkingMan(cx, iconY, iconColor, animationTime);
+            } else if (currentMode === 'jogPace' || currentMode === 'jogTime') {
+                drawRunningMan(cx, iconY, iconColor, animationTime);
             } else if (currentMode === 'totalTime') {
-                drawStopwatch(cx, cy - 120, vibrationOn ? TEAL : GREY);
-            } else {
-                drawRunningMan(cx, cy - 120, vibrationOn ? TEAL : GREY);
+                drawStopwatchIcon(cx, iconY, iconColor);
             }
 
-            // Main Display Selection
-            ctx.fillStyle = '#ffffff';
-            let mainText = "";
-            let subText = "";
+            // 2. Main Display Area
+            let mainY = cy - 25;
+            
+            // Duration Modes
+            if (currentMode === 'walkTime' || currentMode === 'jogTime' || currentMode === 'totalTime') {
+                
+                let duration = 0;
+                let label = '';
+                if(currentMode === 'walkTime') { duration = elapsedWalkSeconds; label = 'WALK'; }
+                if(currentMode === 'jogTime') { duration = elapsedJogSeconds; label = 'JOG'; }
+                if(currentMode === 'totalTime') { duration = elapsedTotalSeconds; label = 'TOTAL'; }
 
-            if (currentMode === 'home' || currentMode === 'walkPace' || currentMode === 'jogPace') {
-                // Real system clock update
+                // Duration Text
+                ctx.fillStyle = TEXT_WHITE;
+                ctx.font = '600 48px Inter, sans-serif';
+                ctx.fillText(formatStopwatch(duration), cx, mainY);
+
+                // Label
+                ctx.fillStyle = TEAL;
+                ctx.font = '500 20px Inter, sans-serif';
+                ctx.fillText(label, cx, mainY + 50);
+                
+            } 
+            // Clock/Pace Modes
+            else {
                 const now = new Date();
                 let hours = now.getHours();
-                subText = hours >= 12 ? 'PM' : 'AM';
+                const ampm = hours >= 12 ? 'PM' : 'AM';
                 hours = hours % 12;
-                hours = hours ? hours : 12; // conversion of '0' to '12'
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                mainText = `${String(hours).padStart(2, '0')}:${minutes}`;
-                ctx.font = 'bold 72px sans-serif';
-            } else if (currentMode === 'walkTime') {
-                mainText = formatStopwatch(elapsedWalkSeconds);
-                ctx.font = 'bold 54px sans-serif'; // smaller to fit HH:MM:SS
-            } else if (currentMode === 'totalTime') {
-                mainText = formatStopwatch(elapsedTotalSeconds);
-                ctx.font = 'bold 54px sans-serif'; // smaller to fit HH:MM:SS
-            }
-            
-            // Draw Main Text
-            ctx.fillText(mainText, cx, cy - 20);
+                hours = hours ? hours : 12; 
+                const timeStr = `${String(hours).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-            // Draw Sub Text (AM/PM)
-            if (subText) {
-                ctx.font = '24px sans-serif';
-                ctx.fillText(subText, cx, cy + 40);
-            }
+                // Time Text
+                ctx.fillStyle = TEXT_WHITE;
+                ctx.font = '600 72px Inter, sans-serif';
+                ctx.fillText(timeStr, cx, mainY - 10);
 
-            // Separator Line
-            ctx.strokeStyle = TEAL;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(cx - 60, cy + 80);
-            ctx.lineTo(cx + 60, cy + 80);
-            ctx.stroke();
+                // AM / PM
+                ctx.font = '500 20px Inter, sans-serif';
+                ctx.fillText(ampm, cx, mainY + 45);
 
-            // Mode Label
-            if (currentMode !== 'home') {
-                ctx.fillStyle = TEAL;
-                ctx.font = 'bold 20px sans-serif';
-                let modeText = "";
-                if (currentMode === 'walkPace' || currentMode === 'walkTime') modeText = "WALK";
-                if (currentMode === 'jogPace') modeText = "JOG";
-                if (currentMode === 'totalTime') modeText = "TOTAL";
-                ctx.fillText(modeText, cx, cy + 110);
+                // Separator Line
+                ctx.strokeStyle = TEAL;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(cx - 35, mainY + 80);
+                ctx.lineTo(cx + 35, mainY + 80);
+                ctx.stroke();
+
+                // Walk / Jog Pace Label (Hidden on Home)
+                if (currentMode !== 'home') {
+                    ctx.fillStyle = TEAL;
+                    ctx.font = '500 20px Inter, sans-serif';
+                    ctx.fillText(currentMode === 'walkPace' ? 'WALK' : 'JOG', cx, mainY + 115);
+                }
             }
 
-            // Vibration Indicator
-            const vibY = cy + 180;
-            drawVibrationIcon(cx, vibY, vibrationOn);
+            // 3. Vibration Indicator
+            drawVibrationIcon(cx, cy + 180, vibrationOn);
 
-            // Update 3D texture
+            // Update 3D texture flag
             if (screenTexture) screenTexture.needsUpdate = true;
         }
 
-        // Custom Canvas Drawing Functions for Icons
+        // --- Custom Drawing Functions ---
+
+        // Helper for segmented limb drawing
+        function drawLimb(startX, startY, length1, angle1, length2, angle2, isBack = false) {
+            ctx.save();
+            if (isBack) ctx.globalAlpha = 0.4; // Make back limbs slightly transparent for depth
+            
+            ctx.translate(startX, startY);
+            ctx.rotate(angle1);
+            
+            ctx.beginPath(); 
+            ctx.moveTo(0, 0); 
+            ctx.lineTo(0, length1); 
+            ctx.stroke();
+            
+            if (length2 > 0) {
+                ctx.translate(0, length1);
+                ctx.rotate(angle2);
+                ctx.beginPath(); 
+                ctx.moveTo(0, 0); 
+                ctx.lineTo(0, length2); 
+                ctx.stroke();
+            }
+            
+            ctx.restore();
+        }
+
         function drawFootprints(x, y, color) {
             ctx.fillStyle = color;
             ctx.save();
             ctx.translate(x, y);
             
-            // Left footprint
-            ctx.beginPath();
-            ctx.ellipse(-12, 0, 8, 16, -0.2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath(); ctx.arc(-18, -22, 4, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(-10, -25, 3, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(-2, -22, 2.5, 0, Math.PI * 2); ctx.fill();
+            const drawFoot = (fx, fy, rot) => {
+                ctx.save();
+                ctx.translate(fx, fy);
+                ctx.rotate(rot);
+                // Pad
+                ctx.beginPath(); ctx.ellipse(0, 0, 5, 11, 0, 0, Math.PI * 2); ctx.fill();
+                // Toes
+                ctx.beginPath(); ctx.arc(-3.5, -14, 2, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(1.5, -16, 2.5, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(6, -13, 2, 0, Math.PI*2); ctx.fill();
+                ctx.restore();
+            };
 
-            // Right footprint (offset)
-            ctx.beginPath();
-            ctx.ellipse(12, -15, 8, 16, 0.2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.beginPath(); ctx.arc(6, -37, 4, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(14, -40, 3, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(22, -37, 2.5, 0, Math.PI * 2); ctx.fill();
+            drawFoot(-9, -2, -0.1);
+            drawFoot(9, -14, 0.1);
             
             ctx.restore();
         }
 
-        function drawRunningMan(x, y, color) {
+        // Dynamic Walking Man
+        function drawWalkingMan(x, y, color, t) {
             ctx.strokeStyle = color;
-            ctx.fillStyle = color;
             ctx.lineWidth = 4;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-            
             ctx.save();
-            ctx.translate(x, y);
             
-            // Head
-            ctx.beginPath();
-            ctx.arc(4, -20, 6, 0, Math.PI * 2);
-            ctx.fill();
+            const speed = 5;
+            const time = t * speed;
+            const swing = Math.sin(time);
+            const bob = Math.abs(Math.cos(time)) * 1.5; 
             
-            // Torso
-            ctx.beginPath();
-            ctx.moveTo(2, -10);
-            ctx.lineTo(-4, 10);
-            ctx.stroke();
+            ctx.translate(x, y - bob);
+            
+            // Left (Back) Arm & Leg
+            drawLimb(0, -6, 9, swing * 0.5, 7, 0.2, true); 
+            drawLimb(0, 3, 11, -swing * 0.6, 11, swing < 0 ? Math.abs(swing) * 0.8 : 0, true); 
 
-            // Arms
-            ctx.beginPath();
-            ctx.moveTo(-10, -12); // left arm back
-            ctx.lineTo(-2, -5);
-            ctx.lineTo(12, -8);  // right arm forward
-            ctx.stroke();
+            // Torso & Head
+            ctx.beginPath(); ctx.moveTo(0, 3); ctx.lineTo(0, -8); ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, -15, 4.5, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill();
 
-            // Legs
-            ctx.beginPath();
-            ctx.moveTo(-4, 10);
-            ctx.lineTo(8, 20); // front leg down
-            ctx.lineTo(4, 32); 
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(-4, 10);
-            ctx.lineTo(-14, 15); // back leg bent
-            ctx.lineTo(-8, 28);
-            ctx.stroke();
+            // Right (Front) Arm & Leg
+            drawLimb(0, -6, 9, -swing * 0.5, 7, 0.2, false);
+            drawLimb(0, 3, 11, swing * 0.6, 11, swing > 0 ? swing * 0.8 : 0, false); 
 
             ctx.restore();
         }
 
-        function drawStopwatch(x, y, color) {
+        // Dynamic Jogging Man
+        function drawRunningMan(x, y, color, t) {
             ctx.strokeStyle = color;
             ctx.lineWidth = 4;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.save();
             
+            const speed = 8;
+            const time = t * speed;
+            const swing = Math.sin(time);
+            const bob = Math.abs(Math.cos(time)) * 3;
+            
+            // Shift to center the lean
+            ctx.translate(x + 2, y - bob + 2); 
+            
+            const lean = -0.25; // Lean forward
+
+            // Left (Back) Arm & Leg
+            drawLimb(0, -6, 8, swing * 0.9 + lean, 8, -1.8, true); // Sharp elbow bend
+            drawLimb(0, 4, 10, -swing * 0.9 + lean, 10, swing < 0 ? Math.abs(swing) * 1.8 : 0.3, true); 
+
+            // Torso & Head
+            ctx.save();
+            ctx.rotate(lean);
+            ctx.beginPath(); ctx.moveTo(0, 4); ctx.lineTo(0, -6); ctx.stroke();
+            ctx.beginPath(); ctx.arc(2, -13, 4.5, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill();
+            ctx.restore();
+
+            // Right (Front) Arm & Leg
+            drawLimb(0, -6, 8, -swing * 0.9 + lean, 8, -1.8, false);
+            drawLimb(0, 4, 10, swing * 0.9 + lean, 10, swing > 0 ? swing * 1.8 : 0.3, false); 
+
+            ctx.restore();
+        }
+
+        function drawStopwatchIcon(x, y, color) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             ctx.save();
             ctx.translate(x, y);
             
-            // Body
-            ctx.beginPath();
-            ctx.arc(0, 0, 18, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Button
-            ctx.beginPath();
-            ctx.moveTo(-6, -22);
-            ctx.lineTo(6, -22);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(0, -18);
-            ctx.lineTo(0, -22);
-            ctx.stroke();
-
-            // Hand
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(8, -8);
-            ctx.stroke();
+            ctx.beginPath(); ctx.arc(0, 0, 16, 0, Math.PI * 2); ctx.stroke();
+            
+            ctx.beginPath(); ctx.moveTo(-4, -20); ctx.lineTo(4, -20); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(0, -20); ctx.stroke();
+            
+            ctx.beginPath(); ctx.moveTo(11, -11); ctx.lineTo(14, -14); ctx.stroke();
+            
+            ctx.beginPath(); ctx.arc(0, 0, 2, 0, Math.PI*2); ctx.fillStyle = color; ctx.fill();
+            ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(6, -8); ctx.stroke();
 
             ctx.restore();
         }
@@ -319,86 +366,43 @@
         function drawVibrationIcon(x, y, isOn) {
             const color = isOn ? TEAL : GREY;
             ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
+            ctx.lineWidth = 2.5;
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             
             ctx.save();
             ctx.translate(x, y);
             
-            // Center squiggle (approximating { } )
             ctx.beginPath();
-            ctx.moveTo(-6, -15);
-            ctx.bezierCurveTo(0, -10, -10, -5, -2, 0);
-            ctx.bezierCurveTo(-10, 5, 0, 10, -6, 15);
+            ctx.moveTo(-4, -11); ctx.quadraticCurveTo(-10, -5.5, -4, 0); ctx.quadraticCurveTo(2, 5.5, -4, 11);
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.moveTo(6, -15);
-            ctx.bezierCurveTo(0, -10, 10, -5, 2, 0);
-            ctx.bezierCurveTo(10, 5, 0, 10, 6, 15);
+            ctx.moveTo(4, -11); ctx.quadraticCurveTo(10, -5.5, 4, 0); ctx.quadraticCurveTo(-2, 5.5, 4, 11);
             ctx.stroke();
 
-            // Outer brackets ( ) if ON
             if (isOn) {
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(-8, 0, 20, Math.PI*0.7, Math.PI*1.3);
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.arc(8, 0, 20, -Math.PI*0.3, Math.PI*0.3);
-                ctx.stroke();
-                
-                // Extra outer brackets
-                ctx.beginPath();
-                ctx.arc(-12, 0, 26, Math.PI*0.75, Math.PI*1.25);
-                ctx.stroke();
-                
-                ctx.beginPath();
-                ctx.arc(12, 0, 26, -Math.PI*0.25, Math.PI*0.25);
-                ctx.stroke();
+                ctx.beginPath(); ctx.arc(-1, 0, 18, Math.PI * 0.75, Math.PI * 1.25); ctx.stroke();
+                ctx.beginPath(); ctx.arc(1, 0, 18, -Math.PI * 0.25, Math.PI * 0.25); ctx.stroke();
             }
 
             ctx.restore();
         }
 
-        // --- Active Clock & Stopwatch Thread (1-second intervals) ---
-        setInterval(() => {
-            // Clock/Home screen needs rendering update to display dynamic system time
-            let forceUpdate = (currentMode === 'home' || currentMode === 'walkPace' || currentMode === 'jogPace');
-
-            if (isTimerRunning) {
-                elapsedTotalSeconds++;
-                // Walking duration ticks up when walking or in home mode (simulated walk pacing)
-                if (currentMode === 'walkTime' || currentMode === 'walkPace' || currentMode === 'home') {
-                    elapsedWalkSeconds++;
-                }
-                forceUpdate = true;
-            }
-
-            if (forceUpdate) {
-                drawScreen();
-            }
-        }, 1000);
-
         // --- UI Interaction Functions ---
         window.setMode = function(mode) {
             currentMode = mode;
-            
-            // Update active state visuals on sidebar buttons
-            const modes = ['home', 'walkPace', 'jogPace', 'walkTime', 'totalTime'];
+            const modes = ['home', 'walkPace', 'jogPace', 'walkTime', 'jogTime', 'totalTime'];
             modes.forEach(m => {
                 const btn = document.getElementById(`btn-${m}`);
                 if (m === mode) {
                     btn.className = "w-full text-left px-4 py-2.5 rounded-xl bg-teal text-black font-semibold border border-teal transition-all group flex items-center justify-between";
                     btn.querySelector('span:last-child').className = "w-2 h-2 rounded-full bg-black";
                 } else {
-                    btn.className = "w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between";
+                    btn.className = "w-full text-left px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-gray-800 border border-gray-700 transition-all group flex items-center justify-between text-sm";
                     btn.querySelector('span:last-child').className = "w-2 h-2 rounded-full bg-teal opacity-0 group-hover:opacity-100 transition-opacity";
                 }
             });
-
-            drawScreen();
         };
 
         window.toggleTimer = function() {
@@ -411,13 +415,13 @@
                 toggleBtn.innerText = "RESUME";
                 toggleBtn.className = "flex-1 py-2 rounded-lg bg-emerald-700 text-white font-semibold text-xs hover:bg-emerald-600 transition-all";
             }
-            drawScreen();
         };
 
         window.resetTimer = function() {
             elapsedTotalSeconds = 0;
             elapsedWalkSeconds = 0;
-            drawScreen();
+            elapsedJogSeconds = 0;
+            animationTime = 0;
         };
 
         window.setVibration = function(isOn) {
@@ -432,19 +436,18 @@
                 offBtn.className = "flex-1 py-2 rounded-lg bg-gray-600 text-white font-semibold text-sm transition-colors";
                 onBtn.className = "flex-1 py-2 rounded-lg text-gray-400 font-semibold text-sm transition-colors hover:text-white";
             }
-            drawScreen();
         };
 
-        // Initialize Canvas
-        drawScreen();
+        document.fonts.ready.then(() => {
+            drawScreen();
+        });
 
         // --- Three.js Setup ---
         const container = document.getElementById('canvas-container');
         
         const scene = new THREE.Scene();
-        // Subtle ambient environment setup
-        scene.background = new THREE.Color('#0a0a0a');
-        scene.fog = new THREE.FogExp2('#0a0a0a', 0.03);
+        scene.background = new THREE.Color('#030303');
+        scene.fog = new THREE.FogExp2('#030303', 0.03);
 
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(3, 2, 7);
@@ -463,8 +466,6 @@
         controls.autoRotateSpeed = 1.0;
         controls.minDistance = 3;
         controls.maxDistance = 15;
-        
-        // Stop auto-rotate on user interaction
         controls.addEventListener('start', () => { controls.autoRotate = false; });
 
         // Lights
@@ -478,15 +479,14 @@
         dirLight.shadow.mapSize.height = 2048;
         scene.add(dirLight);
 
-        const fillLight = new THREE.DirectionalLight(0x00e699, 0.3); // Subtle teal fill
+        const fillLight = new THREE.DirectionalLight(0x00e699, 0.2); 
         fillLight.position.set(-5, 0, -5);
         scene.add(fillLight);
 
-        // --- 3D Model Construction (FlexVital Band) ---
+        // --- 3D Model Construction ---
         const watchGroup = new THREE.Group();
         scene.add(watchGroup);
 
-        // 1. Main Body (Rounded Rectangle)
         const bodyWidth = 1.6;
         const bodyLength = 3.4;
         const bodyDepth = 0.4;
@@ -503,83 +503,51 @@
         shape.lineTo(-bodyWidth/2, -bodyLength/2 + bodyRadius);
         shape.quadraticCurveTo(-bodyWidth/2, -bodyLength/2, -bodyWidth/2 + bodyRadius, -bodyLength/2);
 
-        const extrudeSettings = { 
-            depth: bodyDepth, 
-            bevelEnabled: true, 
-            bevelSegments: 4, 
-            steps: 2, 
-            bevelSize: 0.05, 
-            bevelThickness: 0.08 
-        };
+        const extrudeSettings = { depth: bodyDepth, bevelEnabled: true, bevelSegments: 4, steps: 2, bevelSize: 0.05, bevelThickness: 0.08 };
         const bodyGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
         
-        // Center the geometry
         bodyGeo.computeBoundingBox();
-        const yOffset = -0.5 * (bodyGeo.boundingBox.max.y - bodyGeo.boundingBox.min.y);
         const zOffset = -0.5 * bodyDepth;
         bodyGeo.translate(0, 0, zOffset);
 
-        const bodyMat = new THREE.MeshPhysicalMaterial({ 
-            color: 0x111111, 
-            metalness: 0.4, 
-            roughness: 0.2,
-            clearcoat: 0.3,
-            clearcoatRoughness: 0.2
-        });
+        const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.6, roughness: 0.3, clearcoat: 0.2 });
         const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
         bodyMesh.castShadow = true;
         bodyMesh.receiveShadow = true;
         watchGroup.add(bodyMesh);
 
-        // 2. Screen (Canvas Texture)
+        // Screen (Canvas Texture)
         screenTexture = new THREE.CanvasTexture(sCanvas);
         screenTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         
-        const screenWidth = bodyWidth - 0.2;
-        const screenLength = bodyLength - 0.4;
+        const screenWidth = bodyWidth - 0.15;
+        const screenLength = bodyLength - 0.3;
         const screenGeo = new THREE.PlaneGeometry(screenWidth, screenLength);
         
-        // Basic material so screen appears emissive/backlit
-        const screenMat = new THREE.MeshBasicMaterial({ 
-            map: screenTexture,
-            color: 0xffffff
-        });
+        const screenMat = new THREE.MeshBasicMaterial({ map: screenTexture, color: 0xffffff });
         const screenMesh = new THREE.Mesh(screenGeo, screenMat);
-        // Position slightly above the front face of the body
         screenMesh.position.set(0, 0, bodyDepth/2 + 0.081);
         watchGroup.add(screenMesh);
 
-        // Glass overlay for screen
+        // Glass overlay
         const glassGeo = new THREE.PlaneGeometry(screenWidth, screenLength);
         const glassMat = new THREE.MeshPhysicalMaterial({
-            color: 0xffffff,
-            metalness: 0.1,
-            roughness: 0.1,
-            transmission: 1.0, // glass-like
-            thickness: 0.1,
-            transparent: true,
-            opacity: 0.2
+            color: 0xffffff, metalness: 0.1, roughness: 0.05, transmission: 1.0, thickness: 0.1, transparent: true, opacity: 0.15
         });
         const glassMesh = new THREE.Mesh(glassGeo, glassMat);
         glassMesh.position.set(0, 0, bodyDepth/2 + 0.085);
         watchGroup.add(glassMesh);
 
-        // 3. Side Button
-        const btnGeo = new THREE.BoxGeometry(0.15, 0.6, 0.15);
-        const btnMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.5, roughness: 0.3 });
+        // Side Button
+        const btnGeo = new THREE.BoxGeometry(0.1, 0.7, 0.1);
+        const btnMat = new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8, roughness: 0.2 });
         const btnMesh = new THREE.Mesh(btnGeo, btnMat);
         btnMesh.position.set(-bodyWidth/2 - 0.05, 0, 0);
         watchGroup.add(btnMesh);
 
-        // 4. Straps (Curved textured bands)
-        const strapMat = new THREE.MeshStandardMaterial({ 
-            color: 0x1a1a1a, 
-            roughness: 0.9, 
-            metalness: 0.1,
-            bumpScale: 0.02
-        });
+        // Straps
+        const strapMat = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.9, metalness: 0.1, bumpScale: 0.02 });
 
-        // We'll create a segmented curve for the strap wrapping around a virtual wrist
         function createStrap(isTop) {
             const strapGroup = new THREE.Group();
             const segments = 6;
@@ -590,7 +558,7 @@
             let currentY = isTop ? bodyLength/2 - 0.1 : -bodyLength/2 + 0.1;
             let currentZ = 0;
             let currentAngle = 0;
-            const angleStep = 0.3; // Curvature
+            const angleStep = 0.3; 
 
             for(let i=0; i<segments; i++) {
                 const segGeo = new THREE.BoxGeometry(strapWidth, segmentLength, strapThickness);
@@ -598,15 +566,12 @@
                 segMesh.castShadow = true;
                 segMesh.receiveShadow = true;
 
-                // Pivot offset
                 segGeo.translate(0, isTop ? segmentLength/2 : -segmentLength/2, 0);
-
                 segMesh.position.set(0, currentY, currentZ);
                 segMesh.rotation.x = isTop ? -currentAngle : currentAngle;
                 
                 strapGroup.add(segMesh);
 
-                // Calculate next position based on angle
                 const dy = Math.cos(currentAngle) * segmentLength * (isTop ? 1 : -1);
                 const dz = Math.sin(currentAngle) * segmentLength * (isTop ? -1 : -1);
                 
@@ -617,28 +582,44 @@
             return strapGroup;
         }
 
-        watchGroup.add(createStrap(true));  // Top strap
-        watchGroup.add(createStrap(false)); // Bottom strap
+        watchGroup.add(createStrap(true));  
+        watchGroup.add(createStrap(false)); 
 
-        // Center entire watch group slightly higher
         watchGroup.position.y = 0.5;
 
-        // --- Window Resize Handling ---
-        window.addEventListener('resize', onWindowResize, false);
-        function onWindowResize() {
+        // Window Resize Handling
+        window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        }
+        }, false);
 
-        // --- Animation Loop ---
+        // --- Core Animation Loop ---
+        let lastTime = performance.now();
+        
         function animate() {
             requestAnimationFrame(animate);
-            controls.update(); // Required if controls.enableDamping or controls.autoRotate are set
+            
+            const now = performance.now();
+            const dt = (now - lastTime) / 1000;
+            lastTime = now;
+
+            // Advance timers & animation states if active
+            if (isTimerRunning) {
+                elapsedTotalSeconds += dt;
+                elapsedWalkSeconds += dt;
+                elapsedJogSeconds += dt;
+                animationTime += dt;
+            }
+
+            // Continuously redraw the canvas texture to maintain smooth procedural animation
+            drawScreen();
+
+            controls.update(); 
             renderer.render(scene, camera);
         }
 
-        // Start animation after a slight delay to ensure fonts render on canvas
+        // Delay slight to ensure font load
         setTimeout(animate, 100);
 
     </script>
