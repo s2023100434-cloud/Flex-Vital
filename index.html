@@ -153,15 +153,28 @@
     </section>
 
     <!-- 4. FINAL CTA -->
-    <section id="preorder" class="py-40 text-center px-6">
-        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-12">Precision is <span class="teal-text">Felt.</span></h2>
-        <div class="glass p-12 rounded-[3rem] inline-block w-full max-w-xl">
-            <p class="text-gray-400 mb-6 uppercase tracking-[0.3em] text-xs">Reserve Batch 01 for Php 1,000</p>
-            <button onclick="alert('Success! We will contact you soon.')" class="w-full teal-bg text-black py-6 rounded-2xl font-black uppercase text-xl shadow-[0_0_50px_rgba(43,187,176,0.3)]">
+  <!-- 4. FINAL CTA -->
+<section id="preorder" class="py-40 text-center px-6">
+    <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-12">Precision is <span class="teal-text">Felt.</span></h2>
+    <div class="glass p-12 rounded-[3rem] inline-block w-full max-w-xl">
+        <p class="text-gray-400 mb-6 uppercase tracking-widest">Reserve yours for <s>Php 1,000</s> Php 570</p>
+        
+        <!-- UPDATED FORM SECTION -->
+        <div id="preorder-form">
+            <input type="email" id="user_email" required placeholder="Enter your email address" 
+                class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500 transition-all">
+            <button onclick="handlePreOrder()" id="submit-btn" class="w-full teal-bg text-black py-6 rounded-2xl font-black uppercase text-xl shadow-[0_0_50px_rgba(43,187,176,0.3)] hover:scale-105 transition-all">
                 Pre-Order Now
             </button>
         </div>
-    </section>
+
+        <!-- SUCCESS MESSAGE (Hidden by default) -->
+        <div id="success-msg" class="hidden">
+            <h3 class="text-2xl font-bold teal-text">Check your Inbox!</h3>
+            <p class="text-gray-400 mt-2">A confirmation email with the payment QR Code has been sent to you.</p>
+        </div>
+    </div>
+</section>
 
     <!-- Footer -->
     <footer class="py-20 border-t border-white/5 text-center bg-[#050a10]">
@@ -203,6 +216,49 @@
             });
         });
     </script>
+<!-- 1. EmailJS Library -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
+<script type="text/javascript">
+   (function(){
+      // Replace "YOUR_PUBLIC_KEY" with your actual EmailJS Public Key
+      emailjs.init("YOUR_PUBLIC_KEY");
+   })();
+
+   function handlePreOrder() {
+       const emailField = document.getElementById("user_email");
+       const btn = document.getElementById("submit-btn");
+       const formSection = document.getElementById("preorder-form");
+       const successSection = document.getElementById("success-msg");
+
+       if (!emailField.value || !emailField.checkValidity()) {
+           alert("Please enter a valid email address.");
+           return;
+       }
+
+       // UI Feedback: Loading
+       btn.innerText = "Processing...";
+       btn.disabled = true;
+
+       // Parameters to send to your EmailJS Template
+       const templateParams = {
+           user_email: emailField.value,
+           reply_to: "your-business-email@gmail.com" // Your email
+       };
+
+       // Send the email
+       emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams)
+           .then(function() {
+               // Success
+               formSection.classList.add("hidden");
+               successSection.classList.remove("hidden");
+           }, function(error) {
+               // Fail
+               alert("FAILED to send. Please try again later.");
+               btn.innerText = "Pre-Order Now";
+               btn.disabled = false;
+           });
+   }
+</script>
 </body>
 </html>
