@@ -94,14 +94,14 @@
             </div>
         </div>
 
-        <div class="pointer-events-auto self-end md:self-start bg-black/60 backdrop-blur border border-gray-800 p-4 rounded-xl text-sm text-gray-300 flex items-center gap-3">
+        <div class="pointer-events-auto self-end bg-black/60 backdrop-blur border border-gray-800 p-4 rounded-xl text-sm text-gray-300 flex items-center gap-3">
             <svg class="w-5 h-5 text-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
             Drag to rotate, scroll to zoom
         </div>
     </div>
 
     <script>
-        // --- UI & State Logic (Unchanged) ---
+        // --- UI & State Logic ---
         let currentMode = 'home';
         let vibrationOn = true;
         let isTimerRunning = true;
@@ -282,6 +282,7 @@
                     btn.querySelector('span:last-child').className = "w-2 h-2 rounded-full bg-teal opacity-0 group-hover:opacity-100 transition-opacity";
                 }
             });
+            drawScreen();
         };
 
         window.toggleTimer = function() {
@@ -296,7 +297,7 @@
             }
         };
 
-        window.resetTimer = function() { elapsedTotalSeconds = 0; elapsedWalkSeconds = 0; elapsedJogSeconds = 0; animationTime = 0; };
+        window.resetTimer = function() { elapsedTotalSeconds = 0; elapsedWalkSeconds = 0; elapsedJogSeconds = 0; animationTime = 0; drawScreen(); };
 
         window.setVibration = function(isOn) {
             vibrationOn = isOn;
@@ -304,203 +305,209 @@
             if (isOn) {
                 onBtn.className = "flex-1 py-2 rounded-lg bg-teal text-black font-semibold text-sm transition-colors";
                 offBtn.className = "flex-1 py-2 rounded-lg text-gray-400 font-semibold text-sm transition-colors hover:text-white";
+                // Optional: Attempt browser haptic feedback if supported and not in a restricted iframe
+                if(navigator.vibrate) navigator.vibrate(200);
             } else {
                 offBtn.className = "flex-1 py-2 rounded-lg bg-gray-600 text-white font-semibold text-sm transition-colors";
                 onBtn.className = "flex-1 py-2 rounded-lg text-gray-400 font-semibold text-sm transition-colors hover:text-white";
             }
+            drawScreen();
         };
 
         document.fonts.ready.then(() => drawScreen());
 
-        // --- Three.js Setup ---
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color('#030303');
-        scene.fog = new THREE.FogExp2('#030303', 0.03);
+        // --- Three.js Setup and Animation Loop ---
+        // Ensure 3D simulation starts only after DOM content is fully loaded
+        window.onload = function () {
+            const container = document.getElementById('canvas-container');
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color('#030303');
+            scene.fog = new THREE.FogExp2('#030303', 0.03);
 
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.set(3, 2, 7);
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(3, 2, 7);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        container.appendChild(renderer.domElement);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cap pixel ratio for performance
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
 
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; controls.dampingFactor = 0.05; controls.autoRotate = true; controls.autoRotateSpeed = 1.0;
-        controls.minDistance = 3; controls.maxDistance = 15;
-        controls.addEventListener('start', () => { controls.autoRotate = false; });
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; controls.dampingFactor = 0.05; controls.autoRotate = true; controls.autoRotateSpeed = 1.0;
+            controls.minDistance = 3; controls.maxDistance = 15;
+            controls.addEventListener('start', () => { controls.autoRotate = false; });
 
-        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        dirLight.position.set(5, 10, 5); dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048; dirLight.shadow.mapSize.height = 2048;
-        scene.add(dirLight);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            dirLight.position.set(5, 10, 5); dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048; dirLight.shadow.mapSize.height = 2048;
+            scene.add(dirLight);
 
-        const fillLight = new THREE.DirectionalLight(0x00e699, 0.2); 
-        fillLight.position.set(-5, 0, -5); scene.add(fillLight);
+            const fillLight = new THREE.DirectionalLight(0x00e699, 0.2); 
+            fillLight.position.set(-5, 0, -5); scene.add(fillLight);
 
-        const watchGroup = new THREE.Group();
-        scene.add(watchGroup);
+            const watchGroup = new THREE.Group();
+            scene.add(watchGroup);
 
-        // 1. Main Body
-        const bodyWidth = 1.6; const bodyLength = 3.4; const bodyDepth = 0.4; const bodyRadius = 0.4;
-        const shape = new THREE.Shape();
-        shape.moveTo(-bodyWidth/2 + bodyRadius, -bodyLength/2); shape.lineTo(bodyWidth/2 - bodyRadius, -bodyLength/2);
-        shape.quadraticCurveTo(bodyWidth/2, -bodyLength/2, bodyWidth/2, -bodyLength/2 + bodyRadius); shape.lineTo(bodyWidth/2, bodyLength/2 - bodyRadius);
-        shape.quadraticCurveTo(bodyWidth/2, bodyLength/2, bodyWidth/2 - bodyRadius, bodyLength/2); shape.lineTo(-bodyWidth/2 + bodyRadius, bodyLength/2);
-        shape.quadraticCurveTo(-bodyWidth/2, bodyLength/2, -bodyWidth/2, bodyLength/2 - bodyRadius); shape.lineTo(-bodyWidth/2, -bodyLength/2 + bodyRadius);
-        shape.quadraticCurveTo(-bodyWidth/2, -bodyLength/2, -bodyWidth/2 + bodyRadius, -bodyLength/2);
+            // 1. Main Body
+            const bodyWidth = 1.6; const bodyLength = 3.4; const bodyDepth = 0.4; const bodyRadius = 0.4;
+            const shape = new THREE.Shape();
+            shape.moveTo(-bodyWidth/2 + bodyRadius, -bodyLength/2); shape.lineTo(bodyWidth/2 - bodyRadius, -bodyLength/2);
+            shape.quadraticCurveTo(bodyWidth/2, -bodyLength/2, bodyWidth/2, -bodyLength/2 + bodyRadius); shape.lineTo(bodyWidth/2, bodyLength/2 - bodyRadius);
+            shape.quadraticCurveTo(bodyWidth/2, bodyLength/2, bodyWidth/2 - bodyRadius, bodyLength/2); shape.lineTo(-bodyWidth/2 + bodyRadius, bodyLength/2);
+            shape.quadraticCurveTo(-bodyWidth/2, bodyLength/2, -bodyWidth/2, bodyLength/2 - bodyRadius); shape.lineTo(-bodyWidth/2, -bodyLength/2 + bodyRadius);
+            shape.quadraticCurveTo(-bodyWidth/2, -bodyLength/2, -bodyWidth/2 + bodyRadius, -bodyLength/2);
 
-        const extrudeSettings = { depth: bodyDepth, bevelEnabled: true, bevelSegments: 4, steps: 2, bevelSize: 0.05, bevelThickness: 0.08 };
-        const bodyGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-        bodyGeo.computeBoundingBox(); bodyGeo.translate(0, 0, -0.5 * bodyDepth);
+            const extrudeSettings = { depth: bodyDepth, bevelEnabled: true, bevelSegments: 4, steps: 2, bevelSize: 0.05, bevelThickness: 0.08 };
+            const bodyGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            bodyGeo.computeBoundingBox(); bodyGeo.translate(0, 0, -0.5 * bodyDepth);
 
-        const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.6, roughness: 0.3, clearcoat: 0.2 });
-        const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-        bodyMesh.castShadow = true; bodyMesh.receiveShadow = true; watchGroup.add(bodyMesh);
+            const bodyMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, metalness: 0.6, roughness: 0.3, clearcoat: 0.2 });
+            const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
+            bodyMesh.castShadow = true; bodyMesh.receiveShadow = true; watchGroup.add(bodyMesh);
 
-        // 2. Screen & Glass
-        screenTexture = new THREE.CanvasTexture(sCanvas);
-        screenTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        const screenGeo = new THREE.PlaneGeometry(bodyWidth - 0.15, bodyLength - 0.3);
-        const screenMesh = new THREE.Mesh(screenGeo, new THREE.MeshBasicMaterial({ map: screenTexture, color: 0xffffff }));
-        screenMesh.position.set(0, 0, bodyDepth/2 + 0.081); watchGroup.add(screenMesh);
+            // 2. Screen & Glass
+            screenTexture = new THREE.CanvasTexture(sCanvas);
+            screenTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            const screenGeo = new THREE.PlaneGeometry(bodyWidth - 0.15, bodyLength - 0.3);
+            const screenMesh = new THREE.Mesh(screenGeo, new THREE.MeshBasicMaterial({ map: screenTexture, color: 0xffffff }));
+            screenMesh.position.set(0, 0, bodyDepth/2 + 0.081); watchGroup.add(screenMesh);
 
-        const glassGeo = new THREE.PlaneGeometry(bodyWidth - 0.15, bodyLength - 0.3);
-        const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.1, roughness: 0.05, transmission: 1.0, thickness: 0.1, transparent: true, opacity: 0.15 });
-        const glassMesh = new THREE.Mesh(glassGeo, glassMat);
-        glassMesh.position.set(0, 0, bodyDepth/2 + 0.085); watchGroup.add(glassMesh);
+            const glassGeo = new THREE.PlaneGeometry(bodyWidth - 0.15, bodyLength - 0.3);
+            const glassMat = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0.1, roughness: 0.05, transmission: 1.0, thickness: 0.1, transparent: true, opacity: 0.15 });
+            const glassMesh = new THREE.Mesh(glassGeo, glassMat);
+            glassMesh.position.set(0, 0, bodyDepth/2 + 0.085); watchGroup.add(glassMesh);
 
-        // 3. Side Button
-        const btnGeo = new THREE.BoxGeometry(0.1, 0.7, 0.1);
-        const btnMesh = new THREE.Mesh(btnGeo, new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8, roughness: 0.2 }));
-        btnMesh.position.set(-bodyWidth/2 - 0.05, 0, 0); watchGroup.add(btnMesh);
+            // 3. Side Button
+            const btnGeo = new THREE.BoxGeometry(0.1, 0.7, 0.1);
+            const btnMesh = new THREE.Mesh(btnGeo, new THREE.MeshStandardMaterial({ color: 0x222222, metalness: 0.8, roughness: 0.2 }));
+            btnMesh.position.set(-bodyWidth/2 - 0.05, 0, 0); watchGroup.add(btnMesh);
 
-        // 4. Detailed Straps
-        const strapMat = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.9, metalness: 0.1, bumpScale: 0.02 });
-        const metalMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.2 });
-        const holeMat = new THREE.MeshBasicMaterial({ color: 0x050505 }); // Fake depth for holes
+            // 4. Detailed Straps
+            const strapMat = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: 0.9, metalness: 0.1, bumpScale: 0.02 });
+            const metalMat = new THREE.MeshStandardMaterial({ color: 0xdddddd, metalness: 0.9, roughness: 0.2 });
+            const holeMat = new THREE.MeshBasicMaterial({ color: 0x050505 }); // Fake depth for holes
 
-        function createStrap(isTop) {
-            const strapGroup = new THREE.Group();
-            const segments = isTop ? 4 : 6; // Bottom strap is longer to overlap
-            const segmentLength = 0.8;
-            const strapWidth = bodyWidth - 0.2;
-            const strapThickness = 0.15;
-            
-            let currentY = isTop ? bodyLength/2 - 0.1 : -bodyLength/2 + 0.1;
-            let currentZ = 0;
-            let currentAngle = 0;
-            const angleStep = 0.3; 
-
-            for(let i=0; i<segments; i++) {
-                const segGeo = new THREE.BoxGeometry(strapWidth, segmentLength, strapThickness);
-                const segMesh = new THREE.Mesh(segGeo, strapMat);
-                segMesh.castShadow = true; segMesh.receiveShadow = true;
-
-                // Pivot offset to bend the segments
-                const yOffset = isTop ? segmentLength/2 : -segmentLength/2;
-                segGeo.translate(0, yOffset, 0);
+            function createStrap(isTop) {
+                const strapGroup = new THREE.Group();
+                const segments = isTop ? 4 : 6; // Bottom strap is longer to overlap
+                const segmentLength = 0.8;
+                const strapWidth = bodyWidth - 0.2;
+                const strapThickness = 0.15;
                 
-                segMesh.position.set(0, currentY, currentZ);
-                segMesh.rotation.x = isTop ? -currentAngle : currentAngle;
+                let currentY = isTop ? bodyLength/2 - 0.1 : -bodyLength/2 + 0.1;
+                let currentZ = 0;
+                let currentAngle = 0;
+                const angleStep = 0.3; 
 
-                // --- Add Realistic Details ---
-                if (isTop) {
-                    // Keeper Loop
-                    if (i === 1) {
-                        const loopGeo = new THREE.BoxGeometry(strapWidth + 0.08, 0.3, strapThickness + 0.08);
-                        const loopMesh = new THREE.Mesh(loopGeo, strapMat);
-                        loopMesh.position.set(0, segmentLength/2, 0);
-                        segMesh.add(loopMesh);
-                    }
+                for(let i=0; i<segments; i++) {
+                    const segGeo = new THREE.BoxGeometry(strapWidth, segmentLength, strapThickness);
+                    const segMesh = new THREE.Mesh(segGeo, strapMat);
+                    segMesh.castShadow = true; segMesh.receiveShadow = true;
+
+                    // Pivot offset to bend the segments
+                    const yOffset = isTop ? segmentLength/2 : -segmentLength/2;
+                    segGeo.translate(0, yOffset, 0);
                     
-                    // Metal Buckle
-                    if (i === segments - 1) {
-                        const buckleGroup = new THREE.Group();
-                        const bGeoSide = new THREE.CylinderGeometry(0.04, 0.04, 0.4);
-                        const bGeoTop = new THREE.CylinderGeometry(0.04, 0.04, strapWidth + 0.1);
+                    segMesh.position.set(0, currentY, currentZ);
+                    segMesh.rotation.x = isTop ? -currentAngle : currentAngle;
+
+                    // --- Add Realistic Details ---
+                    if (isTop) {
+                        // Keeper Loop
+                        if (i === 1) {
+                            const loopGeo = new THREE.BoxGeometry(strapWidth + 0.08, 0.3, strapThickness + 0.08);
+                            const loopMesh = new THREE.Mesh(loopGeo, strapMat);
+                            loopMesh.position.set(0, segmentLength/2, 0);
+                            segMesh.add(loopMesh);
+                        }
                         
-                        const bLeft = new THREE.Mesh(bGeoSide, metalMat); bLeft.position.set(-strapWidth/2 - 0.05, 0.2, 0);
-                        const bRight = new THREE.Mesh(bGeoSide, metalMat); bRight.position.set(strapWidth/2 + 0.05, 0.2, 0);
-                        
-                        const bTop = new THREE.Mesh(bGeoTop, metalMat);
-                        bTop.rotation.z = Math.PI / 2; bTop.position.set(0, 0.4, 0);
+                        // Metal Buckle
+                        if (i === segments - 1) {
+                            const buckleGroup = new THREE.Group();
+                            const bGeoSide = new THREE.CylinderGeometry(0.04, 0.04, 0.4);
+                            const bGeoTop = new THREE.CylinderGeometry(0.04, 0.04, strapWidth + 0.1);
+                            
+                            const bLeft = new THREE.Mesh(bGeoSide, metalMat); bLeft.position.set(-strapWidth/2 - 0.05, 0.2, 0);
+                            const bRight = new THREE.Mesh(bGeoSide, metalMat); bRight.position.set(strapWidth/2 + 0.05, 0.2, 0);
+                            
+                            const bTop = new THREE.Mesh(bGeoTop, metalMat);
+                            bTop.rotation.z = Math.PI / 2; bTop.position.set(0, 0.4, 0);
 
-                        const bProng = new THREE.Mesh(bGeoSide, metalMat);
-                        bProng.position.set(0, 0.2, 0); bProng.rotation.x = 0.15; 
+                            const bProng = new THREE.Mesh(bGeoSide, metalMat);
+                            bProng.position.set(0, 0.2, 0); bProng.rotation.x = 0.15; 
 
-                        buckleGroup.add(bLeft, bRight, bTop, bProng);
-                        buckleGroup.position.set(0, segmentLength, 0);
-                        segMesh.add(buckleGroup);
+                            buckleGroup.add(bLeft, bRight, bTop, bProng);
+                            buckleGroup.position.set(0, segmentLength, 0);
+                            segMesh.add(buckleGroup);
+                        }
+                    } else {
+                        // Adjustment Holes
+                        if (i >= 1 && i <= segments - 2) {
+                            const holeGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.02, 16);
+                            
+                            const hole1 = new THREE.Mesh(holeGeo, holeMat);
+                            hole1.rotation.x = Math.PI / 2; 
+                            hole1.position.set(0, -segmentLength/2 + 0.2, strapThickness/2 + 0.005);
+                            segMesh.add(hole1);
+
+                            const hole2 = new THREE.Mesh(holeGeo, holeMat);
+                            hole2.rotation.x = Math.PI / 2; 
+                            hole2.position.set(0, -segmentLength/2 - 0.2, strapThickness/2 + 0.005);
+                            segMesh.add(hole2);
+                        }
+
+                        // Rounded Tip for the bottom strap
+                        if (i === segments - 1) {
+                            const tipGeo = new THREE.CylinderGeometry(strapWidth/2, strapWidth/2, strapThickness, 16);
+                            const tipMesh = new THREE.Mesh(tipGeo, strapMat);
+                            tipMesh.rotation.x = Math.PI / 2; 
+                            tipMesh.position.set(0, -segmentLength, 0);
+                            segMesh.add(tipMesh);
+                        }
                     }
-                } else {
-                    // Adjustment Holes
-                    if (i >= 1 && i <= segments - 2) {
-                        const holeGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.02, 16);
-                        
-                        const hole1 = new THREE.Mesh(holeGeo, holeMat);
-                        hole1.rotation.x = Math.PI / 2; 
-                        hole1.position.set(0, -segmentLength/2 + 0.2, strapThickness/2 + 0.005);
-                        segMesh.add(hole1);
 
-                        const hole2 = new THREE.Mesh(holeGeo, holeMat);
-                        hole2.rotation.x = Math.PI / 2; 
-                        hole2.position.set(0, -segmentLength/2 - 0.2, strapThickness/2 + 0.005);
-                        segMesh.add(hole2);
-                    }
+                    strapGroup.add(segMesh);
 
-                    // Rounded Tip for the bottom strap
-                    if (i === segments - 1) {
-                        const tipGeo = new THREE.CylinderGeometry(strapWidth/2, strapWidth/2, strapThickness, 16);
-                        const tipMesh = new THREE.Mesh(tipGeo, strapMat);
-                        tipMesh.rotation.x = Math.PI / 2; 
-                        tipMesh.position.set(0, -segmentLength, 0);
-                        segMesh.add(tipMesh);
-                    }
+                    currentY += Math.cos(currentAngle) * segmentLength * (isTop ? 1 : -1);
+                    currentZ += Math.sin(currentAngle) * segmentLength * (isTop ? -1 : -1);
+                    currentAngle += angleStep;
+                }
+                return strapGroup;
+            }
+
+            watchGroup.add(createStrap(true));  // Top (Buckle)
+            watchGroup.add(createStrap(false)); // Bottom (Holes)
+            watchGroup.position.y = 0.5;
+
+            // Window Resize handling
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }, false);
+
+            // Core Render Loop
+            let lastTime = performance.now();
+            function animate() {
+                requestAnimationFrame(animate);
+                const now = performance.now();
+                const dt = (now - lastTime) / 1000;
+                lastTime = now;
+
+                if (isTimerRunning) {
+                    elapsedTotalSeconds += dt; elapsedWalkSeconds += dt; elapsedJogSeconds += dt; animationTime += dt;
                 }
 
-                strapGroup.add(segMesh);
-
-                currentY += Math.cos(currentAngle) * segmentLength * (isTop ? 1 : -1);
-                currentZ += Math.sin(currentAngle) * segmentLength * (isTop ? -1 : -1);
-                currentAngle += angleStep;
+                drawScreen();
+                controls.update(); 
+                renderer.render(scene, camera);
             }
-            return strapGroup;
-        }
-
-        watchGroup.add(createStrap(true));  // Top (Buckle)
-        watchGroup.add(createStrap(false)); // Bottom (Holes)
-        watchGroup.position.y = 0.5;
-
-        // Window Resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }, false);
-
-        // Core Render Loop
-        let lastTime = performance.now();
-        function animate() {
-            requestAnimationFrame(animate);
-            const now = performance.now();
-            const dt = (now - lastTime) / 1000;
-            lastTime = now;
-
-            if (isTimerRunning) {
-                elapsedTotalSeconds += dt; elapsedWalkSeconds += dt; elapsedJogSeconds += dt; animationTime += dt;
-            }
-
-            drawScreen();
-            controls.update(); 
-            renderer.render(scene, camera);
-        }
-        setTimeout(animate, 100);
-
+            // Start the animation loop
+            animate();
+        };
     </script>
 </body>
 </html>
