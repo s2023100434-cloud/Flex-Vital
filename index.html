@@ -69,10 +69,15 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass py-3">
+   <nav class="fixed w-full z-50 glass py-5">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <img src="logo.png" alt="FlexVital" class="h-10 w-auto">
-            <button onclick="window.location.href='#preorder'" class="teal-bg text-black px-6 py-2 rounded-full font-black text-xs uppercase italic">Pre-Order</button>
+            <!-- Increased height from h-10 to h-16 -->
+            <img src="logo.png" alt="FlexVital" class="h-16 md:h-20 w-auto object-contain transition-all duration-300">
+            
+            <div class="flex items-center gap-6">
+                <button onclick="openLab()" class="hidden md:block text-[10px] font-bold tracking-[0.2em] uppercase hover:text-teal-400 transition">3D Lab</button>
+                <button onclick="window.location.href='#preorder'" class="teal-bg text-black px-8 py-3 rounded-full font-black text-xs uppercase italic hover:scale-105 transition shadow-[0_0_20px_rgba(43,187,176,0.3)]">Pre-Order</button>
+            </div>
         </div>
     </nav>
 
