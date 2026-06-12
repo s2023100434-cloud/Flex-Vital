@@ -87,8 +87,9 @@
     </nav>
 
     <!-- 1. HERO SECTION: THE TOTAL CONTROL REVEAL -->
-    <header class="hero-container">
-        <video autoplay muted loop playsinline id="bg-video">
+     <header class="hero-container">
+        <!-- Removed opacity and filters from CSS to ensure it's visible instantly -->
+        <video autoplay muted loop playsinline id="bg-video" poster="product.png">
             <source src="promo.mp4" type="video/mp4">
         </video>
         <div class="video-overlay"></div>
@@ -153,7 +154,6 @@
     </section>
 
     <!-- 4. FINAL CTA -->
-  <!-- 4. FINAL CTA -->
 <section id="preorder" class="py-40 text-center px-6">
     <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-12">Precision is <span class="teal-text">Felt.</span></h2>
     <div class="glass p-12 rounded-[3rem] inline-block w-full max-w-xl">
@@ -213,6 +213,20 @@
             const video = document.getElementById('bg-video');
             video.play().catch(e => {
                 document.body.addEventListener('click', () => { video.play(); }, {once: true});
+            });
+        });
+        <script>
+            // 1. FORCE VIDEO TO PLAY (Browsers are strict)
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const video = document.getElementById('bg-video');
+            
+            // Try playing immediately
+            video.play().catch(error => {
+                console.log("Autoplay blocked. Adding backup trigger.");
+                // If blocked, play on the first time the user clicks anywhere
+                document.body.addEventListener('click', () => {
+                    video.play();
+                }, { once: true });
             });
         });
     </script>
