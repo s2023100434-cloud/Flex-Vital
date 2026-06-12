@@ -53,15 +53,16 @@
         </div>
     </nav>
 
-    <header class="hero-container">
-        <!-- poster="product.png" ensures something shows if video fails -->
-        <video autoplay muted loop playsinline id="bg-video" poster="product.png">
-            <source src="promo.mp4" type="video/mp4">
+  <header class="hero-container">
+        <!-- We added a 'poster' so the product image shows if the video fails -->
+        <video autoplay muted loop playsinline id="bg-video" poster="product.png" style="opacity: 0; transition: opacity 1s;">
+            <!-- Using ./ ensures it looks in the root folder -->
+            <source src="./promo.mp4" type="video/mp4">
         </video>
         <div class="video-overlay"></div>
         <div class="relative z-10 text-center px-6">
             <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">Master Your <span class="teal-text italic">Rhythm.</span></h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest leading-relaxed">Own Your Pace. <br>Eyes-Up Performance.</p>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest">Own Your Pace. Eyes-Up Performance.</p>
             <button onclick="openLab()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all">Launch 3D Lab</button>
         </div>
     </header>
@@ -107,10 +108,22 @@
     <script>
         // 1. VIDEO RELIABILITY
         const v = document.getElementById('bg-video');
-        v.oncanplay = () => { v.style.opacity = "1"; v.play(); };
-        window.addEventListener('load', () => { v.play().catch(() => {
-            document.body.addEventListener('click', () => v.play(), {once:true});
-        })});
+        
+        function forcePlayVideo() {
+            v.play().then(() => {
+                v.style.opacity = "1";
+                console.log("Video playing successfully");
+            }).catch(err => {
+                console.log("Autoplay blocked, waiting for interaction");
+            });
+        }
+
+        // Try to play immediately
+        window.addEventListener('load', forcePlayVideo);
+        
+        // Force play on first click (Browser requirement)
+        document.body.addEventListener('click', forcePlayVideo, {once: true});
+        document.body.addEventListener('touchstart', forcePlayVideo, {once: true});
 
         // 2. 3D LAB
         function openLab() {
