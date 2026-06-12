@@ -87,9 +87,9 @@
     </nav>
 
     <!-- 1. HERO SECTION: THE TOTAL CONTROL REVEAL -->
-     <header class="hero-container">
-        <!-- Removed opacity and filters from CSS to ensure it's visible instantly -->
-        <video autoplay muted loop playsinline id="bg-video" poster="product.png">
+    <header class="hero-container" style="background: #000;">
+        <video autoplay muted loop playsinline id="bg-video" poster="product.png" 
+               style="position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; z-index: 1; transform: translate(-50%, -50%); object-fit: cover; filter: brightness(0.4);">
             <source src="promo.mp4" type="video/mp4">
         </video>
         <div class="video-overlay"></div>
@@ -98,7 +98,7 @@
             <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">
                 Master Your <span class="teal-text italic">Rhythm.</span>
             </h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest leading-relaxed">
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest">
                 The haptic fitness band that guides <br class="hidden md:block"> your run without a screen.
             </p>
             <button onclick="openLab()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all">
@@ -216,26 +216,29 @@
             });
         });
         <script>
-            // 1. FORCE VIDEO TO PLAY (Browsers are strict)
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const video = document.getElementById('bg-video');
-            
-            // Try playing immediately
-            video.play().catch(error => {
-                console.log("Autoplay blocked. Adding backup trigger.");
-                // If blocked, play on the first time the user clicks anywhere
-                document.body.addEventListener('click', () => {
-                    video.play();
-                }, { once: true });
+         // FORCED VIDEO START
+        const video = document.getElementById('bg-video');
+
+        function startVideo() {
+            video.play().then(() => {
+                console.log("Video is playing!");
+            }).catch(err => {
+                console.log("Still blocked. Waiting for interaction.");
             });
-        });
+        }
+
+        // Try playing on load
+        window.addEventListener('load', startVideo);
+
+        // If blocked, play as soon as the user clicks or scrolls
+        window.addEventListener('click', startVideo, { once: true });
+        window.addEventListener('scroll', startVideo, { once: true });
     </script>
-<!-- 1. EmailJS Library -->
+<!-- EmailJS Library -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
 <script type="text/javascript">
    (function(){
-      // Replace "YOUR_PUBLIC_KEY" with your actual EmailJS Public Key
       emailjs.init("ENKHf9yA-EciRoOpk");
    })();
 
