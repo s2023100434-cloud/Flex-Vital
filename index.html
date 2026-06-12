@@ -11,15 +11,16 @@
         .teal-text { color: #2bbbb0; }
         .teal-bg { background-color: #2bbbb0; }
         
+        /* HERO VIDEO BACKGROUND - Structural fix from your previous file */
         .hero-container {
             position: relative;
-            height: 100vh; width: 100%;
+            height: 100vh;
+            width: 100%;
             overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-
-        /* Simplified Video CSS - No Opacity Filters */
         #bg-video {
             position: absolute;
             top: 50%; left: 50%;
@@ -28,27 +29,37 @@
             transform: translate(-50%, -50%);
             object-fit: cover;
             filter: brightness(0.4);
-            display: block;
         }
-
         .video-overlay {
             position: absolute; inset: 0;
             background: linear-gradient(to bottom, rgba(5,10,16,0.2) 0%, rgba(5,10,16,1) 100%);
             z-index: 2;
         }
 
+        /* MODAL FOR 3D RENDER */
         #lab-modal {
             display: none;
             position: fixed;
             inset: 0;
             background: black;
-            z-index: 9999;
+            z-index: 1000;
         }
-        #lab-frame { width: 100%; height: 100%; border: none; }
+        #lab-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
         .close-lab {
-            position: absolute; top: 20px; right: 20px; z-index: 10000;
-            background: #2bbbb0; color: black; padding: 10px 25px;
-            border-radius: 50px; font-weight: 900; cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: #2bbbb0;
+            color: black;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 900;
+            cursor: pointer;
         }
 
         .glass { background: rgba(5, 10, 16, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -57,10 +68,12 @@
 </head>
 <body>
 
-    <!-- Navigation -->
+    <!-- 1. NAVIGATION: LARGER LOGO -->
     <nav class="fixed w-full z-50 glass py-5">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <img src="logo.png" alt="FlexVital" class="h-16 md:h-20 w-auto object-contain">
+            <!-- Increased height to make logo more visible -->
+            <img src="logo.png" alt="FlexVital" class="h-16 md:h-20 w-auto object-contain transition-all">
+            
             <div class="flex items-center gap-6">
                 <button onclick="openLab()" class="hidden md:block text-[10px] font-bold tracking-[0.2em] uppercase hover:text-teal-400 transition">3D Lab</button>
                 <button onclick="window.location.href='#preorder'" class="teal-bg text-black px-8 py-3 rounded-full font-black text-xs uppercase italic hover:scale-105 transition shadow-[0_0_20px_rgba(43,187,176,0.3)]">Pre-Order</button>
@@ -68,12 +81,14 @@
         </div>
     </nav>
 
-    <!-- 1. HERO SECTION -->
+    <!-- 2. HERO SECTION -->
     <header class="hero-container">
-        <!-- We put src directly on the video tag for better GitHub compatibility -->
-        <video autoplay muted loop playsinline id="bg-video" src="promo.mp4" poster="product.png"></video>
-        
+        <!-- Structural fix: Using <source> inside <video> as seen in your previous file -->
+        <video autoplay muted loop playsinline id="bg-video" poster="product.png">
+            <source src="promo.mp4" type="video/mp4">
+        </video>
         <div class="video-overlay"></div>
+        
         <div class="relative z-10 text-center px-6">
             <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">
                 Master Your <span class="teal-text italic">Rhythm.</span>
@@ -81,77 +96,87 @@
             <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest leading-relaxed">
                 The haptic fitness band that guides <br class="hidden md:block"> your run without a screen.
             </p>
-            <button onclick="openLab()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all shadow-[0_0_40px_rgba(43,187,176,0.3)]">
+            <button onclick="openLab()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all">
                 Launch 3D Lab
             </button>
         </div>
     </header>
 
-    <!-- 2. ADVANTAGE SECTION -->
+    <!-- 3. ADVANTAGE SECTION -->
     <section class="py-32 bg-[#050a10] px-6">
-        <div class="max-w-6xl mx-auto text-center">
-            <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-16">Focus on the path, <br><span class="teal-text">not the pixels.</span></h2>
-            <div class="grid md:grid-cols-2 gap-8 text-left">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-4 leading-tight">Focus on the path, <br><span class="teal-text">not the pixels.</span></h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
                 <div class="feature-card">
                     <p class="text-red-500 font-bold mb-2 uppercase text-xs tracking-widest">The Distraction</p>
                     <p class="text-gray-500">Smartwatches break your "flow state" and form. Constant screen-checking leads to inconsistent pacing.</p>
                 </div>
-                <div class="feature-card border-teal-500/30 text-left">
-                    <p class="teal-text font-bold mb-2 uppercase text-xs tracking-widest">Focused Horizon</p>
+                <div class="feature-card border-teal-500/30">
+                    <p class="teal-text font-bold mb-2 uppercase text-xs tracking-widest">The FlexVital Way</p>
                     <p class="text-white">Tactile vibration alerts keep you on pace so your eyes stay where they belong—on the horizon line.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. HARDWARE SECTION -->
+    <!-- 4. HARDWARE SECTION -->
     <section class="py-32 bg-black px-6">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center text-left">
-            <img src="product.png" alt="Product" class="rounded-[3rem] shadow-2xl border border-white/5">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+            <div class="relative">
+                <img src="product.png" alt="FlexVital Band" class="rounded-[3rem] shadow-2xl border border-white/5 relative z-10">
+                <div class="absolute -top-10 -left-10 w-64 h-64 bg-teal-500/10 blur-[100px]"></div>
+            </div>
+            
             <div class="space-y-12">
                 <h2 class="text-4xl md:text-6xl font-black italic uppercase leading-tight">Precision <br><span class="teal-text">Hardware</span></h2>
-                <div class="space-y-8">
+                <div class="space-y-10 text-gray-400">
                     <div>
                         <h4 class="teal-text font-black uppercase italic mb-1">Haptic Pulse Engine</h4>
-                        <p class="text-gray-400 text-sm">Invisible alerts for interval transitions. Feel the change instantly.</p>
+                        <p class="text-sm">Invisible alerts for interval transitions. Feel the change instantly.</p>
                     </div>
                     <div>
                         <h4 class="teal-text font-black uppercase italic mb-1">Motion Matrix</h4>
-                        <p class="text-gray-400 text-sm">9-axis monitoring for real-time rhythm and form analysis through every stride.</p>
+                        <p class="text-sm">Advanced 9-axis tracking for real-time rhythm and form analysis through every stride.</p>
                     </div>
+                    <button onclick="openLab()" class="w-full border border-teal-500 py-4 rounded-xl teal-text font-black uppercase tracking-widest hover:bg-teal-500 hover:text-black transition">
+                        Enter Interactive 3D Lab
+                    </button>
                 </div>
-                <button onclick="openLab()" class="w-full border border-teal-500 py-4 rounded-xl teal-text font-black uppercase tracking-widest hover:bg-teal-500 hover:text-black transition">
-                    Enter Interactive 3D Lab
-                </button>
             </div>
         </div>
     </section>
 
-    <!-- 4. PRE-ORDER SECTION -->
+    <!-- 5. PRE-ORDER SECTION -->
     <section id="preorder" class="py-40 text-center px-6">
         <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-12">Precision is <span class="teal-text">Felt.</span></h2>
         <div class="glass p-12 rounded-[3rem] inline-block w-full max-w-xl">
             <p class="text-gray-400 mb-6 uppercase tracking-widest">Reserve yours for <s>Php 1,000</s> <span class="text-white font-bold">Php 570</span></p>
+            
+            <!-- WORKING PRE-ORDER FORM -->
             <div id="preorder-form">
                 <input type="email" id="user_email" required placeholder="Enter your email address" 
-                    class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:border-teal-500 outline-none transition-all">
+                    class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500 transition-all">
                 <button onclick="handlePreOrder()" id="submit-btn" class="w-full teal-bg text-black py-6 rounded-2xl font-black uppercase text-xl shadow-[0_0_50px_rgba(43,187,176,0.3)] hover:scale-105 transition-all">
                     Pre-Order Now
                 </button>
             </div>
+
+            <!-- SUCCESS MESSAGE (Hidden) -->
             <div id="success-msg" class="hidden">
-                <h3 class="text-2xl font-bold teal-text uppercase italic">Success!</h3>
-                <p class="text-gray-400 mt-2 text-sm">A confirmation email with the QR Code has been sent.</p>
+                <h3 class="text-2xl font-bold teal-text uppercase italic">Order Received!</h3>
+                <p class="text-gray-400 mt-2 text-sm tracking-widest">CHECK YOUR INBOX FOR THE QR CODE.</p>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- 6. FOOTER (Restored) -->
     <footer class="py-20 border-t border-white/5 text-center bg-[#050a10]">
         <img src="logo.png" class="h-12 mx-auto mb-8 opacity-40 grayscale">
-        <p class="text-[9px] text-gray-700 tracking-[0.5em] uppercase mb-4 font-bold">Talisay, Batangas • Philippines</p>
+        <p class="text-[9px] text-gray-700 tracking-[0.5em] uppercase mb-4">Talisay, Batangas • Philippines</p>
         <div class="text-[10px] text-gray-600 italic tracking-widest leading-relaxed">
-            FlexVital Technopreneurship Project &copy; 2026<br>
+            FlexVital Technopreneurship Project &copy; 2024<br>
             "Run Smart. Stay Strong. Live Better."
         </div>
     </footer>
@@ -165,50 +190,62 @@
     <!-- SCRIPTS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // 1. IMPROVED VIDEO LOADER
-        const v = document.getElementById('bg-video');
-        
-        function tryPlay() {
-            v.play().catch(() => {
-                // If it fails, wait for any user interaction
-                window.addEventListener('click', () => v.play(), {once: true});
+        // 1. VIDEO FORCE-PLAY (Robust trigger)
+        window.addEventListener('load', function() {
+            const v = document.getElementById('bg-video');
+            v.play().catch(e => {
+                // Trigger on first user click if autoplay is blocked
+                document.body.addEventListener('click', () => { v.play(); }, {once: true});
             });
-        }
-        window.addEventListener('load', tryPlay);
+        });
 
-        // 2. 3D LAB
+        // 2. 3D LAB LOGIC
         function openLab() {
-            document.getElementById('lab-frame').src = "flexvital_3d_interactive_render.html"; 
-            document.getElementById('lab-modal').style.display = "block";
+            const modal = document.getElementById('lab-modal');
+            const frame = document.getElementById('lab-frame');
+            frame.src = "flexvital_3d_interactive_render.html"; 
+            modal.style.display = "block";
             document.body.style.overflow = "hidden";
         }
         function closeLab() {
-            document.getElementById('lab-modal').style.display = "none";
+            const modal = document.getElementById('lab-modal');
+            const frame = document.getElementById('lab-frame');
+            modal.style.display = "none";
+            frame.src = "";
             document.body.style.overflow = "auto";
         }
 
-        // 3. EMAILJS
+        // 3. EMAILJS LOGIC
         (function(){ emailjs.init("ENKHf9yA-EciRoOpk"); })();
 
         function handlePreOrder() {
             const emailField = document.getElementById("user_email");
             const btn = document.getElementById("submit-btn");
-            if (!emailField.value || !emailField.checkValidity()) { alert("Please enter a valid email."); return; }
-            
+
+            if (!emailField.value || !emailField.checkValidity()) {
+                alert("Please enter a valid email address."); return;
+            }
+
             btn.innerText = "SENDING...";
             btn.disabled = true;
 
-            emailjs.send('service_flexvital', 'template_zc1umec', {
+            // templateParams must match the variables in your EmailJS Template (e.g., {{user_email}})
+            const templateParams = {
                 user_email: emailField.value,
-                to_email: emailField.value
-            }).then(() => {
-                document.getElementById("preorder-form").classList.add("hidden");
-                document.getElementById("success-msg").classList.remove("hidden");
-            }, (err) => {
-                alert("Email failed to send. Check your dashboard.");
-                btn.innerText = "Pre-Order Now"; btn.disabled = false;
-            });
+                to_email: emailField.value 
+            };
+
+            emailjs.send('service_flexvital', 'template_zc1umec', templateParams)
+                .then(function() {
+                    document.getElementById("preorder-form").classList.add("hidden");
+                    document.getElementById("success-msg").classList.remove("hidden");
+                }, function(error) {
+                    alert("FAILED to send. Check your monthly limits or template settings.");
+                    btn.innerText = "Pre-Order Now";
+                    btn.disabled = false;
+                });
         }
     </script>
+
 </body>
 </html>
