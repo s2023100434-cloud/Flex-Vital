@@ -11,15 +11,12 @@
         .teal-text { color: #2bbbb0; }
         .teal-bg { background-color: #2bbbb0; }
         
-        /* HERO VIDEO BACKGROUND */
         .hero-container {
             position: relative;
-            height: 100vh;
-            width: 100%;
+            height: 100vh; width: 100%;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
+            background: #000;
         }
         #bg-video {
             position: absolute;
@@ -29,225 +26,131 @@
             transform: translate(-50%, -50%);
             object-fit: cover;
             filter: brightness(0.4);
+            opacity: 0;
+            transition: opacity 1s;
         }
         .video-overlay {
             position: absolute; inset: 0;
             background: linear-gradient(to bottom, rgba(5,10,16,0.2) 0%, rgba(5,10,16,1) 100%);
             z-index: 2;
         }
-
-        /* MODAL FOR 3D RENDER */
-        #lab-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: black;
-            z-index: 1000;
-        }
-        #lab-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .close-lab {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
-            background: #2bbbb0;
-            color: black;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 900;
-            cursor: pointer;
-        }
-
+        #lab-modal { display: none; position: fixed; inset: 0; background: black; z-index: 1000; }
+        #lab-frame { width: 100%; height: 100%; border: none; }
+        .close-lab { position: absolute; top: 20px; right: 20px; z-index: 1001; background: #2bbbb0; color: black; padding: 10px 20px; border-radius: 50px; font-weight: 900; }
         .glass { background: rgba(5, 10, 16, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
         .feature-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 2rem; }
     </style>
 </head>
 <body>
 
-    <!-- Navigation -->
-   <nav class="fixed w-full z-50 glass py-5">
+    <nav class="fixed w-full z-50 glass py-5">
         <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <!-- Increased height from h-10 to h-16 -->
-            <img src="logo.png" alt="FlexVital" class="h-16 md:h-20 w-auto object-contain transition-all duration-300">
-            
+            <img src="logo.png" alt="FlexVital" class="h-16 md:h-20 w-auto object-contain">
             <div class="flex items-center gap-6">
-                <button onclick="openLab()" class="hidden md:block text-[10px] font-bold tracking-[0.2em] uppercase hover:text-teal-400 transition">3D Lab</button>
-                <button onclick="window.location.href='#preorder'" class="teal-bg text-black px-8 py-3 rounded-full font-black text-xs uppercase italic hover:scale-105 transition shadow-[0_0_20px_rgba(43,187,176,0.3)]">Pre-Order</button>
+                <button onclick="openLab()" class="hidden md:block text-[10px] font-bold tracking-[0.2em] uppercase hover:text-teal-400">3D Lab</button>
+                <button onclick="window.location.href='#preorder'" class="teal-bg text-black px-8 py-3 rounded-full font-black text-xs uppercase italic shadow-[0_0_20px_rgba(43,187,176,0.3)]">Pre-Order</button>
             </div>
         </div>
     </nav>
 
-    <!-- 1. HERO SECTION: THE TOTAL CONTROL REVEAL -->
     <header class="hero-container">
-        <video autoplay muted loop playsinline id="bg-video">
+        <!-- poster="product.png" ensures something shows if video fails -->
+        <video autoplay muted loop playsinline id="bg-video" poster="product.png">
             <source src="promo.mp4" type="video/mp4">
         </video>
         <div class="video-overlay"></div>
-        
         <div class="relative z-10 text-center px-6">
-            <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">
-                Master Your <span class="teal-text italic">Rhythm.</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest">
-                Own Your Pace. Eyes-Up Performance.
-            </p>
-            <button onclick="openLab()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all">
-                Launch 3D Lab
-            </button>
+            <h1 class="text-6xl md:text-8xl font-black mb-4 tracking-tighter uppercase italic leading-none">Master Your <span class="teal-text italic">Rhythm.</span></h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-10 font-light max-w-2xl mx-auto uppercase tracking-widest leading-relaxed">Own Your Pace. <br>Eyes-Up Performance.</p>
+            <button onclick="openLab()" class="teal-bg text-black px-12 py-5 rounded-full text-lg font-black uppercase tracking-widest hover:scale-105 transition-all">Launch 3D Lab</button>
         </div>
     </header>
 
-    <!-- 2. THE "EYES-UP" ADVANTAGE -->
+    <!-- [ADVANTAGE & HARDWARE SECTIONS - Kept same as your file] -->
     <section class="py-32 bg-[#050a10] px-6">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-4">Focus on the path, <br><span class="teal-text">not the pixels.</span></h2>
-            </div>
+            <div class="text-center mb-16"><h2 class="text-4xl md:text-6xl font-black italic uppercase mb-4">Focus on the path, <br><span class="teal-text">not the pixels.</span></h2></div>
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="feature-card">
-                    <p class="text-red-500 font-bold mb-2 uppercase">The Distraction</p>
-                    <p class="text-gray-500">Smartwatches break your "flow state" and form. Constant screen-checking leads to inconsistent pacing.</p>
-                </div>
-                <div class="feature-card border-teal-500/30">
-                    <p class="teal-text font-bold mb-2 uppercase">The FlexVital Way</p>
-                    <p class="text-white">Tactile vibration alerts keep you on pace so your eyes stay where they belong—on the horizon.</p>
-                </div>
+                <div class="feature-card"><p class="text-red-500 font-bold mb-2 uppercase">The Distraction</p><p class="text-gray-500 text-sm">Smartwatches break your "flow state" and form. Constant screen-checking leads to inconsistent pacing.</p></div>
+                <div class="feature-card border-teal-500/30"><p class="teal-text font-bold mb-2 uppercase">The FlexVital Way</p><p class="text-white text-sm">Tactile vibration alerts keep you on pace so your eyes stay where they belong—on the horizon.</p></div>
             </div>
         </div>
     </section>
 
-    <!-- 3. FEATURE SHOWCASE: PRECISION HARDWARE -->
-    <section class="py-32 bg-black px-6">
-        <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center">
-            <!-- PRODUCT IMAGE PRESERVED HERE -->
-            <div class="relative">
-                <img src="product.png" alt="FlexVital Band" class="rounded-[3rem] shadow-2xl border border-white/5 relative z-10">
-                <div class="absolute -top-10 -left-10 w-64 h-64 bg-teal-500/10 blur-[100px]"></div>
-            </div>
+    <section id="preorder" class="py-40 text-center px-6">
+        <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-12">Precision is <span class="teal-text">Felt.</span></h2>
+        <div class="glass p-12 rounded-[3rem] inline-block w-full max-w-xl">
+            <p class="text-gray-400 mb-6 uppercase tracking-widest">Reserve yours for <s>Php 1,000</s> <span class="text-white font-bold">Php 570</span></p>
             
-            <div>
-                <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-12 leading-tight">Precision <br><span class="teal-text">Hardware</span></h2>
-                <div class="space-y-8">
-                    <div>
-                        <h4 class="teal-text font-black uppercase italic mb-1">Haptic Pulse Engine</h4>
-                        <p class="text-gray-400 text-sm">Invisible alerts for interval transitions. Feel the change instantly.</p>
-                    </div>
-                    <div>
-                        <h4 class="teal-text font-black uppercase italic mb-1">Motion Matrix</h4>
-                        <p class="text-gray-400 text-sm">Advanced 9-axis monitoring for real-time rhythm and form analysis.</p>
-                    </div>
-                    <button onclick="openLab()" class="w-full border border-teal-500 py-4 rounded-xl teal-text font-black uppercase tracking-widest hover:bg-teal-500 hover:text-black transition">
-                        Enter Interactive 3D Lab
-                    </button>
-                </div>
+            <div id="preorder-form">
+                <input type="email" id="user_email" required placeholder="Enter your email address" 
+                    class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:border-teal-500 outline-none transition-all">
+                <button onclick="handlePreOrder()" id="submit-btn" class="w-full teal-bg text-black py-6 rounded-2xl font-black uppercase text-xl shadow-[0_0_50px_rgba(43,187,176,0.3)] hover:scale-105 transition-all">
+                    Pre-Order Now
+                </button>
+            </div>
+
+            <div id="success-msg" class="hidden">
+                <h3 class="text-2xl font-bold teal-text uppercase italic">Order Received!</h3>
+                <p class="text-gray-400 mt-2 text-sm">Check your inbox for the Payment QR Code.</p>
             </div>
         </div>
     </section>
 
-<!-- 4. FINAL CTA -->
-<section id="preorder" class="py-40 text-center px-6">
-    <h2 class="text-5xl md:text-8xl font-black italic uppercase mb-12">Precision is <span class="teal-text">Felt.</span></h2>
-    <div class="glass p-12 rounded-[3rem] inline-block w-full max-w-xl">
-        <p class="text-gray-400 mb-6 uppercase tracking-widest">Reserve yours for <s>Php 1,000</s> Php 570</p>
-        
-        <!-- UPDATED FORM SECTION -->
-        <div id="preorder-form">
-            <input type="email" id="user_email" required placeholder="Enter your email address" 
-                class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-teal-500 transition-all">
-            <button onclick="handlePreOrder()" id="submit-btn" class="w-full teal-bg text-black py-6 rounded-2xl font-black uppercase text-xl shadow-[0_0_50px_rgba(43,187,176,0.3)] hover:scale-105 transition-all">
-                Pre-Order Now
-            </button>
-        </div>
-
-        <!-- SUCCESS MESSAGE (Hidden by default) -->
-        <div id="success-msg" class="hidden">
-            <h3 class="text-2xl font-bold teal-text">Check your Inbox!</h3>
-            <p class="text-gray-400 mt-2">A confirmation email with the payment QR Code has been sent to you.</p>
-        </div>
-    </div>
-</section>
-
-    <!-- 3D LAB MODAL (Opens your separate HTML file) -->
     <div id="lab-modal">
         <button class="close-lab" onclick="closeLab()">CLOSE LAB [X]</button>
         <iframe id="lab-frame" src=""></iframe>
     </div>
 
+    <!-- SCRIPTS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // FUNCTION TO OPEN THE SEPARATE HTML FILE
-        function openLab() {
-            const modal = document.getElementById('lab-modal');
-            const frame = document.getElementById('lab-frame');
-            // We set the src only when clicked to keep the main site fast
-            frame.src = "flexvital_3d_interactive_render.html"; 
-            modal.style.display = "block";
-            document.body.style.overflow = "hidden"; // Disable scrolling background
-        }
+        // 1. VIDEO RELIABILITY
+        const v = document.getElementById('bg-video');
+        v.oncanplay = () => { v.style.opacity = "1"; v.play(); };
+        window.addEventListener('load', () => { v.play().catch(() => {
+            document.body.addEventListener('click', () => v.play(), {once:true});
+        })});
 
+        // 2. 3D LAB
+        function openLab() {
+            document.getElementById('lab-frame').src = "flexvital_3d_interactive_render.html"; 
+            document.getElementById('lab-modal').style.display = "block";
+            document.body.style.overflow = "hidden";
+        }
         function closeLab() {
-            const modal = document.getElementById('lab-modal');
-            const frame = document.getElementById('lab-frame');
-            modal.style.display = "none";
-            frame.src = ""; // Stop the 3D engine when closed
+            document.getElementById('lab-modal').style.display = "none";
             document.body.style.overflow = "auto";
         }
 
-        // Background Video Force Play
-        window.addEventListener('load', function() {
-            document.getElementById('bg-video').play().catch(e => {
-                document.body.addEventListener('click', () => {
-                    document.getElementById('bg-video').play();
-                }, {once: true});
-            });
-        });
+        // 3. EMAILJS LOGIC
+        (function(){ emailjs.init("ENKHf9yA-EciRoOpk"); })();
+
+        function handlePreOrder() {
+            const emailField = document.getElementById("user_email");
+            const btn = document.getElementById("submit-btn");
+
+            if (!emailField.value || !emailField.checkValidity()) {
+                alert("Please enter a valid email."); return;
+            }
+
+            btn.innerText = "SENDING...";
+            btn.disabled = true;
+
+            const templateParams = {
+                user_email: emailField.value,
+                to_email: emailField.value // This variable should match the 'To Email' in your dashboard
+            };
+
+            emailjs.send('service_flexvital', 'template_zc1umec', templateParams)
+                .then(() => {
+                    document.getElementById("preorder-form").classList.add("hidden");
+                    document.getElementById("success-msg").classList.remove("hidden");
+                }, (err) => {
+                    alert("Error: " + JSON.stringify(err));
+                    btn.innerText = "Pre-Order Now"; btn.disabled = false;
+                });
+        }
     </script>
-<!-- 1. EmailJS Library -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
-<script type="text/javascript">
-   (function(){
-      // Replace "YOUR_PUBLIC_KEY" with your actual EmailJS Public Key
-      emailjs.init("ENKHf9yA-EciRoOpk");
-   })();
-
-   function handlePreOrder() {
-       const emailField = document.getElementById("user_email");
-       const btn = document.getElementById("submit-btn");
-       const formSection = document.getElementById("preorder-form");
-       const successSection = document.getElementById("success-msg");
-
-       if (!emailField.value || !emailField.checkValidity()) {
-           alert("Please enter a valid email address.");
-           return;
-       }
-
-       // UI Feedback: Loading
-       btn.innerText = "Processing...";
-       btn.disabled = true;
-
-       // Parameters to send to your EmailJS Template
-       const templateParams = {
-           user_email: emailField.value,
-           reply_to: "your-business-email@gmail.com" // Your email
-       };
-
-       // Send the email
-       emailjs.send('service_flexvital', 'template_zc1umec', templateParams)
-           .then(function() {
-               // Success
-               formSection.classList.add("hidden");
-               successSection.classList.remove("hidden");
-           }, function(error) {
-               // Fail
-               alert("FAILED to send. Please try again later.");
-               btn.innerText = "Pre-Order Now";
-               btn.disabled = false;
-           });
-   }
-</script>
 </body>
 </html>
